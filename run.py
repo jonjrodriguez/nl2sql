@@ -1,5 +1,7 @@
 import argparse
 import nltk
+from nltk.corpus import conll2000
+from Chunkers import UnigramChunker, BigramChunker, MaxentChunker
 
 def tokenize(query):
     return nltk.word_tokenize(' '.join(query))
@@ -9,24 +11,32 @@ def tag(query):
 
     tagged_tokens = nltk.pos_tag(tokens)
 
-    print 'tagged:', tagged_tokens
     return tagged_tokens
 
 def np_chunk(query):
-    grammar = r"""
-        NBAR: {<NN.*|JJ>*<NN.*>}
+    test_sents = conll2000.chunked_sents('test.txt', chunk_types=['NP'])
+    train_sents = conll2000.chunked_sents('train.txt', chunk_types=['NP'])
 
-        NP: {<NBAR>}
-            {<NBAR><IN><NBAR>}
-    """
+    unichunker = UnigramChunker.UnigramChunker(train_sents)
+    bichunker = BigramChunker.BigramChunker(train_sents)
+    # too slow
+    # maxchunker = MaxentChunker.MaxentChunker(train_sents)
 
-    chunker = nltk.RegexpParser(grammar)
+    print unichunker.evaluate(test_sents)
+    print bichunker.evaluate(test_sents)
+    # print maxchunker.evaluate(test_sents)
 
     tagged_tokens = tag(query)
-    chunked_tokens = chunker.parse(tagged_tokens)
 
-    print 'np chunked:', chunked_tokens
-    return chunked_tokens
+    chunked_tokens2 = unichunker.parse(tagged_tokens)
+    chunked_tokens3 = bichunker.parse(tagged_tokens)
+    # chunked_tokens4 = maxchunker.parse(tagged_tokens)
+
+    print 'np chunked:', chunked_tokens2
+    print 'np chunked:', chunked_tokens3
+    # print 'np chunked:', chunked_tokens4
+
+    return chunked_tokens3
 
 def ne_chunk(query):
     tagged_tokens = tag(query)
