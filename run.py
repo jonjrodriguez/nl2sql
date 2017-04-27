@@ -1,54 +1,42 @@
 import argparse
-import nltk
-from nltk.corpus import conll2000
-from Chunkers import UnigramChunker, BigramChunker, MaxentChunker
+from nltk.tokenize.stanford import StanfordTokenizer
+from nltk.tag.stanford import StanfordPOSTagger, StanfordNERTagger
+from nltk.parse.stanford import StanfordParser, StanfordDependencyParser
 
-def tokenize(query):
-    return nltk.word_tokenize(' '.join(query))
+PATH_TO_JAR = "./stanford/stanford-corenlp-3.7.0.jar"
+PATH_TO_MODELS_JAR = "./stanford/stanford-corenlp-3.7.0-models.jar"
 
 def tag(query):
-    tokens = tokenize(query)
+    tagger = StanfordPOSTagger('./stanford/models/pos/english-bidirectional-distsim.tagger',
+                               PATH_TO_JAR)
 
-    tagged_tokens = nltk.pos_tag(tokens)
+    return tagger.tag(StanfordTokenizer(PATH_TO_JAR).tokenize(query))
 
-    return tagged_tokens
+def ner(query):
+    tagger = StanfordNERTagger('./stanford/models/ner/english.all.3class.distsim.crf.ser.gz',
+                               PATH_TO_JAR)
 
-def np_chunk(query):
-    test_sents = conll2000.chunked_sents('test.txt', chunk_types=['NP'])
-    train_sents = conll2000.chunked_sents('train.txt', chunk_types=['NP'])
+    return tagger.tag(StanfordTokenizer(PATH_TO_JAR).tokenize(query))
 
-    unichunker = UnigramChunker.UnigramChunker(train_sents)
-    bichunker = BigramChunker.BigramChunker(train_sents)
-    # too slow
-    # maxchunker = MaxentChunker.MaxentChunker(train_sents)
+def parse(query):
+    parser = StanfordParser(PATH_TO_JAR, PATH_TO_MODELS_JAR)
+    result = parser.raw_parse(query)
+    tree = result.next()
 
-    print unichunker.evaluate(test_sents)
-    print bichunker.evaluate(test_sents)
-    # print maxchunker.evaluate(test_sents)
+    print tree
+    print tree.pretty_print()
 
-    tagged_tokens = tag(query)
+    dep_parser = StanfordDependencyParser(PATH_TO_JAR, PATH_TO_MODELS_JAR)
+    result = dep_parser.raw_parse(query)
+    tree = result.next()
 
-    chunked_tokens2 = unichunker.parse(tagged_tokens)
-    chunked_tokens3 = bichunker.parse(tagged_tokens)
-    # chunked_tokens4 = maxchunker.parse(tagged_tokens)
-
-    print 'np chunked:', chunked_tokens2
-    print 'np chunked:', chunked_tokens3
-    # print 'np chunked:', chunked_tokens4
-
-    return chunked_tokens3
-
-def ne_chunk(query):
-    tagged_tokens = tag(query)
-
-    chunked_tokens = nltk.ne_chunk(tagged_tokens)
-
-    print 'ne chunked:', chunked_tokens
-    return chunked_tokens
+    print tree.tree()
+    print tree.tree().pretty_print()
+    return list(tree.triples())
 
 def main():
     parser = argparse.ArgumentParser(description='Transform Natural Language to SQL')
-    parser.add_argument('method', choices=['tag', 'np_chunk', 'ne_chunk'],
+    parser.add_argument('method', choices=['tag', 'ner', 'parse'],
                         help='The functionality you wish to invoke')
     parser.add_argument('query', nargs='+', help='Your natural language query')
 
@@ -56,12 +44,13 @@ def main():
 
     switcher = {
         'tag': tag,
-        'np_chunk': np_chunk,
-        'ne_chunk': ne_chunk
+        'ner': ner,
+        'parse': parse
     }
 
     func = switcher.get(args.method)
-    func(args.query)
+    result = func(' '.join(args.query))
+    print result
 
 if __name__ == '__main__':
     main()
