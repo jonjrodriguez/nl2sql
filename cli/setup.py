@@ -1,0 +1,2 @@
+def setup():
+    print 'setup'

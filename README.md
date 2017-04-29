@@ -4,6 +4,7 @@ NL2SQL seeks to transform natural language questions to SQL, allowing individual
 ## Dependencies
 * [NLTK](http://www.nltk.org/)
 * [Stanford CoreNLP](https://stanfordnlp.github.io/CoreNLP/)
+* [Plac](http://micheles.github.io/plac/)
 
 ## NL2SQL Pipeline
 
