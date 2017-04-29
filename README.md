@@ -2,9 +2,18 @@
 NL2SQL seeks to transform natural language questions to SQL, allowing individuals to run unstructured queries against databases. 
 
 ## Dependencies
+
 * [NLTK](http://www.nltk.org/)
 * [Stanford CoreNLP](https://stanfordnlp.github.io/CoreNLP/)
 * [Plac](http://micheles.github.io/plac/)
+* [Requests](http://docs.python-requests.org/)
+
+### Setup
+
+```
+pip install -r requirements.txt
+python nl2sql.py download
+```
 
 ## NL2SQL Pipeline
 
