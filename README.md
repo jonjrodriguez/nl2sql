@@ -7,12 +7,15 @@ NL2SQL seeks to transform natural language questions to SQL, allowing individual
 * [Stanford CoreNLP](https://stanfordnlp.github.io/CoreNLP/)
 * [Plac](http://micheles.github.io/plac/)
 * [Requests](http://docs.python-requests.org/)
+* [MySQLdb](http://mysqldb.readthedocs.io)
+* [Faker](https://faker.readthedocs.io)
 
 ### Setup
 
 ```
 pip install -r requirements.txt
 python nl2sql.py download
+python nl2sql.py setup
 ```
 
 ## NL2SQL Pipeline
