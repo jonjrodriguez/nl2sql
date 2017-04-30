@@ -1,2 +1,1 @@
-from analyzer import parse
-from sentiment import determineNegativeSentiment
+from parse.Parser import Parser
