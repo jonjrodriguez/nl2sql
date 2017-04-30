@@ -1,5 +1,5 @@
 # NL2SQL
-NL2SQL seeks to transform natural language questions to SQL, allowing individuals to run unstructured queries against databases. 
+NL2SQL seeks to transform natural language questions to SQL, allowing individuals to run unstructured queries against databases.
 
 ## Dependencies
 
@@ -7,17 +7,75 @@ NL2SQL seeks to transform natural language questions to SQL, allowing individual
 * [Stanford CoreNLP](https://stanfordnlp.github.io/CoreNLP/)
 * [Plac](http://micheles.github.io/plac/)
 * [Requests](http://docs.python-requests.org/)
+* [MySQLdb](http://mysqldb.readthedocs.io)
+* [Faker](https://faker.readthedocs.io)
 
 ### Setup
 
+To install Dependencies (may take a while):
+```sh
+$ pip install -r requirements.txt
+$ python nl2sql.py download
 ```
-pip install -r requirements.txt
-python nl2sql.py download
+
+To setup, first have a MySQL database ready and running, then run:
+```sh
+$ python nl2sql.py setup
+```
+
+Which will prompt you to enter a database information, then prompt you to
+import the schema and seed the database.
+
+Example run:
+
+```sh
+$ python nl2sql.py setup
+
+  Setting up NL2SQL.
+
+
+  Configuring Database:
+
+  Enter hostname: LOCALHOST
+  Enter MySQL user: ROOT
+  Enter MySQL password:
+  Enter database name: DATABASE_NAME
+
+  Do you want to import the database schema? [y/n]: y
+
+  Importing Database schema.
+
+
+  Database schema import complete.
+
+
+  Do you want to seed the database? [y/n]: y
+
+  Seeding Database with data.
+
+  Creating terms
+  Creating campuses
+  Creating faculty members
+  Creating courses
+  Creating sections
+  Creating students
+  Creating registrations
+
+  Saving seeds to database
+
+  Finished Seeding Database.
+
+
+  Database configured.
+
+
+  Set up complete.
+
 ```
 
 ## NL2SQL Pipeline
 
-To convert natural language to SQL, we will attempt to split up the task into at least three parts. Each one depending on the ones before it. The pipeline will attempt to extract at least one SQL statement out of the given text. It is possible that there may be no SQL statement. 
+To convert natural language to SQL, we will attempt to split up the task into at least three parts. Each one depending on the ones before it. The pipeline will attempt to extract at least one SQL statement out of the given text. It is possible that there may be no SQL statement.
 
 ### Question Classification
 
@@ -28,13 +86,13 @@ The first step in creating the NL2SQL interface is to break down the question in
   3. __What__: 'What' questions probably expect an entity, but probably not a `PERSON`.
   4. __When__: 'When' questions will let us know we're probably looking for a `datetime` or similar data value.
   5. __Num__: These questions will probably want a `COUNT`, `AVG`, `SUM` or something of that nature as the SQL return value.
-  
+
 #### Inputs
 As an input, the Classifier takes in a full english statement
 
 #### Outputs
 As output, the classifier will return one of the above mentioned categories.
-  
+
 ### Parsing
 
 Parsing the statement is the next step of the pipeline. If we have the question classified, we can parse the sentence using a parsing library to try and discover the `SUBJECT` or `SUBJECTS` of the question. This could be useful to identify the tables we will try and explore. We can also parse out `DIRECT OBJECT(S)`, in an effort to see what columns we can select. With a collection of both, we can construct a list of possible `FROM` candidates, and a list of possible `SELECT` candidates.
@@ -54,9 +112,3 @@ Two lists, one of possible `FROM` candidates (table names), and one of possible 
 
 #### Outputs
 A list of `<SELECT,FROM>` tuples, and their confidence levels.
-
-
-
-
-
-
