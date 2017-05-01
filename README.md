@@ -40,31 +40,8 @@ $ python nl2sql.py setup
   Enter MySQL user: ROOT
   Enter MySQL password:
   Enter database name: DATABASE_NAME
-
   Do you want to import the database schema? [y/n]: y
-
-  Importing Database schema.
-
-
-  Database schema import complete.
-
-
   Do you want to seed the database? [y/n]: y
-
-  Seeding Database with data.
-
-  Creating terms
-  Creating campuses
-  Creating faculty members
-  Creating courses
-  Creating sections
-  Creating students
-  Creating registrations
-
-  Saving seeds to database
-
-  Finished Seeding Database.
-
 
   Database configured.
 
