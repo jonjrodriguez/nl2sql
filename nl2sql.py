@@ -4,12 +4,11 @@ Command-line interface for NL2SQL
 
 import os
 import plac
-from cli.download import download as cli_download
-from cli.setup import setup as cli_setup
-from cli.run import run as cli_run
-from cli.test import main as cli_test
+from communicate import Communicator
+from cli import Download, Setup, Runner
 
-commands = 'download', 'setup', 'run', 'test'
+commands = 'download', 'setup', 'run'
+
 
 @plac.annotations(
     path=("Path to download models and jar files (default: ./data)", "option", "p", str),
@@ -20,40 +19,37 @@ def download(path, force):
     Download the Stanford CoreNLP tools and related models.
     Install the needed project dependencies.
     """
-    cli_download(path or './data', force)
+    comm = Communicator()
 
-def setup():
+    Download(comm, path or './data').run(force)
+
+
+@plac.annotations(
+    force=("Force setup to rerun", "flag", "f", bool)
+)
+def setup(force):
     """
     Setup the project as needed.
     """
-    if not os.path.isfile('config.cfg'):
-        print "\n   Make sure to run the download command first.\n"
-        exit()
+    comm = Communicator()
 
-    cli_setup()
+    if not os.path.isfile('config.cfg'):
+        comm.error('Make sure to run the download command first.')
+
+    Setup(comm).run(force)
+
 
 def run():
     """
     Start NL2SQL to parse questions
     """
+    comm = Communicator()
+
     if not os.path.isfile('config.cfg'):
-        print "\n   Make sure to run the download and setup commands first.\n"
-        exit()
+        comm.error('Make sure to run the download and setup commands first.')
 
-    cli_run()
+    Runner(comm).start()
 
-@plac.annotations(
-    method=("Test method to run", "positional", None, str, ['tag', 'ner', 'parse'])
-)
-def test(method):
-    """
-    Scratch area to test different taggers and parsers
-    """
-    if not os.path.isfile('config.cfg'):
-        print "\n   Make sure to run the download command first.\n"
-        exit()
-
-    cli_test(method)
 
 def __missing__(name):
     print("\n   Command %r does not exist."
