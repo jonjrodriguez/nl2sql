@@ -25,13 +25,17 @@ class Parser(object):
         self.parser = StanfordParser(jar_path, stanford_models_jar)
 
 
+    def tokenize(self, statement):
+        return self.tokenizer.tokenize(statement)
+
+
     def tag(self, statement):
-        tokens = self.tokenizer.tokenize(statement)
+        tokens = self.tokenize(statement)
         return self.pos_tagger.tag(tokens)
 
 
     def ner(self, statement):
-        tokens = self.tokenizer.tokenize(statement)
+        tokens = self.tokenize(statement)
         return self.ner_tagger.tag(tokens)
 
 
