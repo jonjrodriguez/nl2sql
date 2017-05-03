@@ -19,10 +19,14 @@ class Node(object):
 
 
     def add_attribute(self, node):
-        if self.type is NodeType.TABLE:
-            self.attributes.append(node.label)
+        if self.type is not NodeType.TABLE:
+            raise TypeError("Attribute Node does not contain attributes")
+
+        self.attributes.append(node.label)
 
 
     def add_relation(self, node, self_key, foreign_key):
-        if self.type is NodeType.TABLE:
-            self.relations.append((node.label, self_key, foreign_key))
+        if self.type is not NodeType.TABLE:
+            raise TypeError("Attribute Node does not contain relations")
+
+        self.relations.append((node.label, self_key, foreign_key))
