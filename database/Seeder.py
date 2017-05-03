@@ -140,11 +140,9 @@ class Seeder(object):
                 registrations.append({
                     'id': index,
                     'student_id': student['id'],
-                    'section_id': choice(sections)['id'],
-                    'status': choice(statuses)
+                    'section_id': choice(sections)['id']
                 })
 
                 index += 1
 
         return registrations
-        
