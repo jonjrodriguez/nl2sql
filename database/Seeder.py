@@ -131,7 +131,6 @@ class Seeder(object):
 
 
     def create_registrations(self, students, sections):
-        statuses = ['Enrolled', 'Dropped']
 
         registrations = []
         index = 1
