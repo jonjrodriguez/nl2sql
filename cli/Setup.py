@@ -1,5 +1,6 @@
+import os
 from Config import Config
-from database import Database
+from database import Database, SchemaGraph
 
 class Setup(object):
     """
@@ -14,6 +15,7 @@ class Setup(object):
         self.comm.say("Setting up NL2SQL.")
 
         self.setup_db(force)
+        self.create_db_graph(force)
 
         self.config.write()
         self.comm.say("Set up complete.")
@@ -58,3 +60,29 @@ class Setup(object):
         self.config.set("DATABASE", "database", db_name)
 
         self.comm.say("Database configured.")
+
+
+    def create_db_graph(self, force):
+        if not force and self.config.has("DATABASE", "graph_path"):
+            self.comm.say("Database Graph already constructed.")
+            return
+
+        self.comm.say("Constructing Database Graph.")
+
+        hostname = self.config.get("DATABASE", "hostname")
+        username = self.config.get("DATABASE", "username")
+        password = self.config.get("DATABASE", "password")
+        db_name = self.config.get("DATABASE", "database")
+
+        try:
+            database = Database(hostname, username, password, db_name)
+        except ValueError as exception:
+            self.comm.error("Error: %s" % exception)
+
+        base_path = self.config.get('PATHS', 'base')
+        graph_path = os.path.join(base_path, "graph.p")
+
+        SchemaGraph().construct(database, graph_path)
+        self.config.set("DATABASE", "graph_path", graph_path)
+
+        self.comm.say("Database Graph constructed.")

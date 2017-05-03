@@ -1,5 +1,6 @@
 # Custom
 .idea
+.vscode
 config.cfg
 
 # Byte-compiled / optimized / DLL files

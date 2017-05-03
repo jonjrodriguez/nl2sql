@@ -27,6 +27,33 @@ class Database(object):
         self.database.select_db(db_name)
 
 
+    def get_tables(self):
+        cursor = self.execute("SHOW TABLES;")
+        return cursor.fetchall()
+
+
+    def get_fields(self, table):
+        cursor = self.execute("DESCRIBE %s" % table)
+        return cursor.fetchall()
+
+
+    def get_foreign_keys(self):
+        cursor = self.execute("SELECT DATABASE()")
+        current_db = cursor.fetchone()[0]
+
+        self.set_db("INFORMATION_SCHEMA")
+
+        cursor = self.execute("""SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME,
+            REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME from KEY_COLUMN_USAGE WHERE
+            TABLE_SCHEMA = "%s" and referenced_column_name is not NULL;""" % current_db)
+
+        foreign_keys = cursor.fetchall()
+
+        self.set_db(current_db)
+
+        return foreign_keys
+
+
     def import_schema(self):
         filterwarnings('ignore', category=Warning)
 
@@ -66,7 +93,7 @@ class Database(object):
     def execute(self, statement):
         cursor = self.database.cursor()
         cursor.execute(statement)
-
+        return cursor
 
     def executemany(self, statement, values):
         cursor = self.database.cursor()
