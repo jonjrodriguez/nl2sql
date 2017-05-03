@@ -1,4 +1,4 @@
-from parse import Parser
+from parse import Tagger, Parser
 
 class Runner(object):
     """
@@ -6,6 +6,7 @@ class Runner(object):
     """
     def __init__(self, communicator):
         self.comm = communicator
+        self.tagger = Tagger()
         self.parser = Parser()
 
 
@@ -23,8 +24,10 @@ class Runner(object):
             if statement.lower() == 'exit':
                 break
 
-            parses = self.parser.parse(statement)
+            # parses = self.parser.parse(statement)
+            # self.comm.say(parses)
 
-            self.comm.say(parses)
+            tags = self.tagger.tag_db_values(statement)
+            self.comm.say(tags)
 
             self.comm.resume()

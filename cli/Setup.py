@@ -108,7 +108,7 @@ class Setup(object):
             self.comm.error("Error: %s" % exception)
 
         base_path = self.config.get('PATHS', 'base')
-        corpus_path = os.path.join(base_path, "database_corpus")
+        corpus_path = os.path.join(base_path, "database_corpus.p")
 
         CorpusGenerator().create_db_corpus(database, corpus_path)
         self.config.set("DATABASE", "corpus_path", corpus_path)

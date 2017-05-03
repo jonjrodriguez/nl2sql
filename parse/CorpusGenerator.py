@@ -1,11 +1,12 @@
-from parse import Parser
+import cPickle as pickle
+from parse import Tagger
 
 class CorpusGenerator(object):
     """
     Methods to generate corpuses for later tagging and use
     """
     def __init__(self):
-        self.parser = Parser()
+        self.tagger = Tagger()
 
 
     def create_db_corpus(self, database, path):
@@ -18,16 +19,21 @@ class CorpusGenerator(object):
             'terms': ['semester', 'year']
         }
 
-        with open(path, "wb") as corpus:
-            for table in tables:
-                cursor = database.execute("SELECT %s FROM %s" % (", ".join(tables[table]), table))
-                rows = cursor.fetchall()
-                for row in rows:
-                    for i, value in enumerate(row):
-                        if " " in str(value):
-                            tokens = self.parser.tokenize(value)
-                            for token in tokens:
-                                corpus.write("%s\t%s.%s\n" % (token, table, tables[table][i]))
-                        else:
-                            corpus.write("%s\t%s.%s\n" % (value, table, tables[table][i]))
-                    corpus.write("\n")
+        corpus = []
+        for table in tables:
+            cursor = database.execute("SELECT %s FROM %s" % (", ".join(tables[table]), table))
+            rows = cursor.fetchall()
+            for row in rows:
+                sentence = []
+                for i, value in enumerate(row):
+                    label = "%s.%s" % (table, tables[table][i])
+                    if " " in str(value):
+                        tokens = self.tagger.tokenize(value)
+                        for token in tokens:
+                            sentence.append((token, label))
+                    else:
+                        sentence.append((value, label))
+
+                corpus.append(sentence)
+
+        pickle.dump(corpus, open(path, "wb"))
