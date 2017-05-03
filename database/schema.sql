@@ -75,7 +75,6 @@ CREATE TABLE `registrations` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `section_id` INT UNSIGNED NOT NULL,
   `student_id` INT UNSIGNED NOT NULL,
-  `status` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (section_id) references sections(id) on DELETE CASCADE,
   FOREIGN KEY (student_id) references students(id) on DELETE CASCADE
