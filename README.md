@@ -50,6 +50,30 @@ $ python nl2sql.py setup
 
 ```
 
+## SQL Grammar
+
+We will only be querying against the database.
+
+* `SELECT` node
+* Operator Node, takes one of these operators and a list of column names.
+  * Enum consisting of:
+    * `COUNT` - A count operation on values
+    * `MAX` - Gets the maximum from a list of values.
+    * `MIN` - Gets the minumum from a list of values.
+    * `AVG` - Gets the average of a list of numeric values.
+    * `TOP` - Gets the first result from a list of, requires an argument
+    * `NONE` - No operations run
+  * column_names = [] - List of column names to extract
+* `FROM` Node with a list of Table names
+  * `table_names` = []
+* CLAUSE NODE: `WHERE`
+  * `IN` - Takes two parameters, checks if one is in the other list.
+  * `NOT IN` - Inverse of previous.
+  * `=` - Takes two parameters, checks to see if they match.
+  * `<>` - Takes two parameters, checks to see if they dont match.
+
+
+
 ## NL2SQL Pipeline
 
 To convert natural language to SQL, we will attempt to split up the task into at least three parts. Each one depending on the ones before it. The pipeline will attempt to extract at least one SQL statement out of the given text. It is possible that there may be no SQL statement.
