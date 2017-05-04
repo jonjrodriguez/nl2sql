@@ -1,5 +1,5 @@
 import cPickle as pickle
-from parse import Tagger
+from nlp import Tagger
 
 class CorpusGenerator(object):
     """

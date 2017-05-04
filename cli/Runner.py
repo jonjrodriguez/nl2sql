@@ -1,12 +1,18 @@
-from parse import Tagger, Parser
+from Config import Config
+from nlp import Classifier, Parser, Tagger
 
 class Runner(object):
     """
     Starts the NL2SQL system
     """
     def __init__(self, communicator):
+        self.config = Config()
+        db_model = self.config.get("MODELS", "db_model")
+
         self.comm = communicator
+
         self.tagger = Tagger()
+        self.classifier = Classifier(db_model)
         self.parser = Parser()
 
 
@@ -27,7 +33,9 @@ class Runner(object):
             # parses = self.parser.parse(statement)
             # self.comm.say(parses)
 
-            tags = self.tagger.tag_db_values(statement)
+            tokens = self.tagger.tokenize(statement)
+
+            tags = self.classifier.classify(tokens)
             self.comm.say(tags)
 
             self.comm.resume()

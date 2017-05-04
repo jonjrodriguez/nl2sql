@@ -1,7 +1,7 @@
 import os
 from Config import Config
 from database import Database, SchemaGraph
-from parse import CorpusGenerator
+from nlp import CorpusGenerator, Classifier
 
 class Setup(object):
     """
@@ -18,6 +18,7 @@ class Setup(object):
         self.setup_db(force)
         self.create_db_graph(force)
         self.create_db_corpus(force)
+        self.train_db_classifier(force)
 
         self.config.write()
         self.comm.say("Set up complete.")
@@ -114,3 +115,21 @@ class Setup(object):
         self.config.set("DATABASE", "corpus_path", corpus_path)
 
         self.comm.say("Database Corpus created.")
+
+
+    def train_db_classifier(self, force):
+        if not force and self.config.has("MODELS", "db_model"):
+            self.comm.say("Database classifier already trained.")
+            return
+
+        self.comm.say("Training database classifier.")
+
+        corpus_path = self.config.get("DATABASE", "corpus_path")
+
+        base_path = self.config.get('PATHS', 'base')
+        model_path = os.path.join(base_path, "db_model.p")
+
+        Classifier().train_db_classifier(corpus_path, model_path)
+        self.config.set("MODELS", "db_model", model_path)
+
+        self.comm.say("Database classifier trained.")
