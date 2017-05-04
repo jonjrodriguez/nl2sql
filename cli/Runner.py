@@ -1,4 +1,4 @@
-from parse import Parser
+from nlp import Parser
 
 class Runner(object):
     """
