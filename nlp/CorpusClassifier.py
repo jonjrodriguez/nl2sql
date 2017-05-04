@@ -2,7 +2,7 @@ import cPickle as pickle
 from nltk import MaxentClassifier
 from nlp.utils import shape
 
-class Classifier(object):
+class CorpusClassifier(object):
     """
     Classify statements based on trained models
     """
@@ -22,7 +22,7 @@ class Classifier(object):
         return zip(statement, history)
 
 
-    def train_db_classifier(self, corpus_path, model_path):
+    def train(self, corpus_path, model_path):
         with open(corpus_path) as corpus_file:
             corpus = pickle.load(corpus_file)
 

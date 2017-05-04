@@ -1,7 +1,7 @@
 import os
 from Config import Config
 from database import Database, SchemaGraph
-from nlp import CorpusGenerator, Classifier
+from nlp import CorpusGenerator, CorpusClassifier
 
 class Setup(object):
     """
@@ -129,7 +129,7 @@ class Setup(object):
         base_path = self.config.get('PATHS', 'base')
         model_path = os.path.join(base_path, "db_model.p")
 
-        Classifier().train_db_classifier(corpus_path, model_path)
+        CorpusClassifier().train(corpus_path, model_path)
         self.config.set("MODELS", "db_model", model_path)
 
         self.comm.say("Database classifier trained.")

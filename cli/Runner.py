@@ -1,5 +1,5 @@
 from Config import Config
-from nlp import Classifier, Parser, Tagger
+from nlp import CorpusClassifier, Parser, Tagger
 
 class Runner(object):
     """
@@ -12,7 +12,7 @@ class Runner(object):
         self.comm = communicator
 
         self.tagger = Tagger()
-        self.classifier = Classifier(db_model)
+        self.classifier = CorpusClassifier(db_model)
         self.parser = Parser()
 
 
