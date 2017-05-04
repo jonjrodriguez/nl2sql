@@ -8,7 +8,7 @@ class Classifier(object):
     """
     def __init__(self, model_path=None):
         if model_path:
-            with open(model_path) as model_file:
+            with open(model_path, "rb") as model_file:
                 self.classifier = pickle.load(model_file)
 
 
@@ -35,8 +35,10 @@ class Classifier(object):
                 train_set.append((feature_set, column))
                 history.append(column)
 
-        classifier = MaxentClassifier.train(train_set)
-        pickle.dump(classifier, open(model_path, "wb"))
+        classifier = MaxentClassifier.train(train_set, max_iter=20)
+
+        with open(model_path, "wb") as model_file:
+            pickle.dump(classifier, model_file)
 
 
     def db_row_features(self, sentence, i, history):
@@ -46,7 +48,6 @@ class Classifier(object):
         features = {
             'token': word,
             'lower': word.lower(),
-            'wordlen': len(word),
             'shape': word_shape,
             'semester': word.lower() in ['summer', 'fall', 'winter', 'spring']
         }
