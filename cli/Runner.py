@@ -1,4 +1,4 @@
-from nlp import Parser
+from nlp import Parser, SimFinder, Tagger
 
 class Runner(object):
     """
@@ -6,7 +6,10 @@ class Runner(object):
     """
     def __init__(self, communicator):
         self.comm = communicator
+
         self.parser = Parser()
+        self.tagger = Tagger()
+        self.sim_finder = SimFinder()
 
 
     def start(self):
@@ -22,9 +25,12 @@ class Runner(object):
 
             if statement.lower() == 'exit':
                 break
+            
+            # parses = self.parser.parse(statement)
 
-            parses = self.parser.parse(statement)
+            tokens = self.tagger.tokenize(statement)
+            matches = self.sim_finder.find_db_matches(tokens)
 
-            self.comm.say(parses)
+            self.comm.say(matches)
 
             self.comm.resume()
