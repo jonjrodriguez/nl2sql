@@ -1,4 +1,5 @@
 import os
+import nltk
 from Config import Config
 from database import Database, SchemaGraph
 from nlp import CorpusGenerator, CorpusClassifier
@@ -14,6 +15,10 @@ class Setup(object):
 
     def run(self, force):
         self.comm.say("Setting up NL2SQL.")
+
+        # Download wordnet corpora
+        self.comm.say("Downloading WordNet corpora.")
+        nltk.download("wordnet")
 
         self.setup_db(force)
         self.create_db_graph(force)

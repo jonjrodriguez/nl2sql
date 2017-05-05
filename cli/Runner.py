@@ -1,5 +1,5 @@
 from Config import Config
-from nlp import CorpusClassifier, Parser, Tagger
+from nlp import CorpusClassifier, Parser, SimFinder, Tagger
 
 class Runner(object):
     """
@@ -11,9 +11,10 @@ class Runner(object):
 
         self.comm = communicator
 
-        self.tagger = Tagger()
         self.classifier = CorpusClassifier(db_model)
         self.parser = Parser()
+        self.tagger = Tagger()
+        self.sim_finder = SimFinder()
 
 
     def start(self):
@@ -29,13 +30,16 @@ class Runner(object):
 
             if statement.lower() == 'exit':
                 break
+            
+            tokens = self.tagger.tokenize(statement)
+            
+            matches = self.sim_finder.find_db_matches(tokens)
+            self.comm.say(matches)
 
             # parses = self.parser.parse(statement)
             # self.comm.say(parses)
 
-            tokens = self.tagger.tokenize(statement)
-
-            tags = self.classifier.classify(tokens)
-            self.comm.say(tags)
+            # tags = self.classifier.classify(tokens)
+            # self.comm.say(tags)
 
             self.comm.resume()
