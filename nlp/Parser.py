@@ -1,18 +1,22 @@
-from nltk.parse.stanford import StanfordParser
-from Config import Config
+from nltk.parse.stanford import StanfordParser, StanfordDependencyParser
 
 class Parser(object):
     """
-    Parse and analyze sentence structure
+    Parse sentence structure
     """
-    def __init__(self):
-        config = Config()
+    def __init__(self, jar_path, model_path):
+        self.parser = StanfordParser(jar_path, model_path)
+        self.dep_parser = StanfordDependencyParser(jar_path, model_path)
 
-        jar_path = config.get("PATHS", "stanford_jar")
-        stanford_models_jar = config.get("PATHS", "stanford_models_jar")
 
-        self.parser = StanfordParser(jar_path, stanford_models_jar)
+    def __call__(self, doc):
+        doc['parse'] = self.parse(doc['text'])
+        doc['dep_parse'] = self.dep_parse(doc['text'])
 
 
     def parse(self, statement):
-        return list(self.parser.raw_parse(statement))
+        return next(self.parser.raw_parse(statement))
+
+
+    def dep_parse(self, statement):
+        return next(self.dep_parser.raw_parse(statement))

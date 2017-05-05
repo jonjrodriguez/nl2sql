@@ -10,16 +10,20 @@ class CorpusClassifier(object):
         if model_path:
             with open(model_path, "rb") as model_file:
                 self.classifier = pickle.load(model_file)
+    
+
+    def __call__(self, doc):
+        doc['corpus_class'] = self.classify(doc['tokens'])
 
 
-    def classify(self, statement):
+    def classify(self, tokens):
         history = []
-        for i, word in enumerate(statement):
-            feature_set = self.db_row_features(statement, i, history)
+        for i, word in enumerate(tokens):
+            feature_set = self.db_row_features(tokens, i, history)
             tag = self.classifier.classify(feature_set)
             history.append(tag)
 
-        return zip(statement, history)
+        return zip(tokens, history)
 
 
     def train(self, corpus_path, model_path):

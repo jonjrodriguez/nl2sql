@@ -48,7 +48,7 @@ def run():
     if not os.path.isfile('config.cfg'):
         comm.error('Make sure to run the download and setup commands first.')
 
-    Runner(comm).start()
+    Runner().start()
 
 
 def __missing__(name):
