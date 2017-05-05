@@ -3,3 +3,4 @@ plac==0.9.6
 requests==2.13.0
 mysql==0.0.1
 Faker==0.7.11
+numpy==1.12.1
