@@ -1,11 +1,18 @@
-from nlp import Parser
+from Config import Config
+from nlp import CorpusClassifier, Parser, Tagger
 
 class Runner(object):
     """
     Starts the NL2SQL system
     """
     def __init__(self, communicator):
+        self.config = Config()
+        db_model = self.config.get("MODELS", "db_model")
+
         self.comm = communicator
+
+        self.tagger = Tagger()
+        self.classifier = CorpusClassifier(db_model)
         self.parser = Parser()
 
 
@@ -23,8 +30,12 @@ class Runner(object):
             if statement.lower() == 'exit':
                 break
 
-            parses = self.parser.parse(statement)
+            # parses = self.parser.parse(statement)
+            # self.comm.say(parses)
 
-            self.comm.say(parses)
+            tokens = self.tagger.tokenize(statement)
+
+            tags = self.classifier.classify(tokens)
+            self.comm.say(tags)
 
             self.comm.resume()
