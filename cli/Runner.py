@@ -1,45 +1,60 @@
 from Config import Config
-from nlp import CorpusClassifier, Parser, SimFinder, Tagger
+from communicate import Communicator
+from database import SchemaGraph
+from nlp import CorpusClassifier, Parser, SimFinder, Tagger, Tokenizer
 
 class Runner(object):
     """
-    Starts the NL2SQL system
+    Starts the NL2SQL system. Creates the pipeline
     """
-    def __init__(self, communicator):
-        self.config = Config()
-        db_model = self.config.get("MODELS", "db_model")
+    def __init__(self):
+        config = Config()
+        paths = dict(config.items("PATHS"))
+        db_settings = dict(config.items("DATABASE"))
+        models = dict(config.items("MODELS"))
+        
+        self.communicator = Communicator()
+        schema_graph = SchemaGraph(db_settings['graph_path'])
 
-        self.comm = communicator
+        self.tokenizer = Tokenizer(paths['stanford_jar'])
 
-        self.classifier = CorpusClassifier(db_model)
-        self.parser = Parser()
-        self.tagger = Tagger()
-        self.sim_finder = SimFinder()
+        tagger = Tagger(paths['stanford_jar'], paths['stanford_models'])
+        parser = Parser(paths['stanford_jar'], paths['stanford_models_jar'])
+        corpus_classifier = CorpusClassifier(models['db_model'])
+        sim_finder = SimFinder(schema_graph)
+
+        self.pipeline = [tagger, parser, corpus_classifier, sim_finder]
 
 
     def start(self):
-        self.comm.say("Type 'exit' to quit")
+        self.communicator.say("Type 'exit' to quit")
 
-        self.comm.greet()
+        self.communicator.greet()
         self.start_loop()
 
 
     def start_loop(self):
         while True:
-            statement = self.comm.ask(">")
+            statement = self.communicator.ask(">")
 
             if statement.lower() == 'exit':
                 break
             
-            tokens = self.tagger.tokenize(statement)
-            
-            matches = self.sim_finder.find_db_matches(tokens)
-            self.comm.say(matches)
+            doc = self.make_doc(statement)
 
-            # parses = self.parser.parse(statement)
-            # self.comm.say(parses)
+            for process in self.pipeline:
+                process(doc)
 
-            # tags = self.classifier.classify(tokens)
-            # self.comm.say(tags)
+            for key, value in doc.iteritems():
+                print "%s: " % key
+                print value
+                print
 
-            self.comm.resume()
+            self.communicator.resume()
+    
+
+    def make_doc(self, statement):
+        return {
+            'text': statement,
+            'tokens': self.tokenizer(statement)
+        }

@@ -1,23 +1,25 @@
 from math import sqrt
 from nltk.corpus import wordnet
 from nltk.metrics import jaccard_distance
-from database import SchemaGraph, NodeType
-from Config import Config
+from database import NodeType
 
 class SimFinder(object):
     """
     Finds the similarity between words
     """
-    def __init__(self):
-        self.config = Config()
+    def __init__(self, schema_graph):
+        self.nodes = [schema_graph.get_node(label) for label in schema_graph.nodes()]
+    
 
-    def find_db_matches(self, sentence, cutoff=.7, table=''):
-        graph_path = self.config.get("DATABASE", "graph_path")
-        graph = SchemaGraph(graph_path)
-        nodes = [graph.get_node(label) for label in graph.nodes() if label.startswith(table)]
+    def __call__(self, doc):
+        doc['db_matches'] = self.find_db_matches(doc['tokens'])
+
+
+    def find_db_matches(self, tokens, cutoff=.7, table=''):
+        nodes = [node for node in self.nodes if node.label.startswith(table)]
         
         matches = []
-        for word in sentence:
+        for word in tokens:
             matches.append((word, self.most_sim_node(word, cutoff, nodes)))
 
         return matches
