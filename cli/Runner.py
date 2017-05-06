@@ -2,6 +2,8 @@ from Config import Config
 from communicate import Communicator
 from database import SchemaGraph
 from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tagger, Tokenizer
+from classifier.QuestionClassifier import QuestionClassifier
+
 
 class Runner(object):
     """
@@ -24,6 +26,8 @@ class Runner(object):
         schema_classifier = DBSchemaClassifier(schema_graph)
 
         self.pipeline = [tagger, parser, corpus_classifier, schema_classifier]
+
+        self.classifier = QuestionClassifier()
 
 
     def start(self):
@@ -51,6 +55,8 @@ class Runner(object):
                 print
 
             self.communicator.resume()
+
+            print self.classifier.classify(statement)
 
 
     def make_doc(self, statement):

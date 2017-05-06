@@ -3,6 +3,8 @@ import nltk
 from Config import Config
 from database import Database, SchemaGraph
 from nlp import DBCorpusGenerator, DBCorpusClassifier
+from classifier.QuestionClassifier import QuestionClassifier
+
 
 class Setup(object):
     """
@@ -26,6 +28,10 @@ class Setup(object):
         self.train_db_classifier(force)
 
         self.config.write()
+
+        self.comm.say("Training question classifier")
+        classifier = QuestionClassifier(False)
+        classifier.train()
         self.comm.say("Set up complete.")
 
 
