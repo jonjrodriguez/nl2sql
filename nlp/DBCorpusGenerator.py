@@ -13,7 +13,7 @@ class DBCorpusGenerator(object):
         tables = {
             'campuses': ['location'],
             'courses': ['peoplesoft_course_id', 'name'],
-            'faculty_members': ['first_name', 'last_name'],
+            'faculty': ['first_name', 'last_name'],
             'sections': ['name', 'peoplesoft_course_id', 'section_number'],
             'students': ['first_name', 'last_name', 'university_id', 'net_id', 'email'],
             'terms': ['semester', 'year']

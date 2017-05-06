@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS `registrations`;
 DROP TABLE IF EXISTS `students`;
 DROP TABLE IF EXISTS `sections`;
 DROP TABLE IF EXISTS `courses`;
-DROP TABLE IF EXISTS `faculty_members`;
+DROP TABLE IF EXISTS `faculty`;
 DROP TABLE IF EXISTS `campuses`;
 DROP TABLE IF EXISTS `terms`;
 
@@ -19,7 +19,7 @@ CREATE TABLE `campuses` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `faculty_members` (
+CREATE TABLE `faculty` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(50) NOT NULL,
   `last_name` VARCHAR(50) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `sections` (
   `course_id` INT UNSIGNED NOT NULL,
   `term_id` INT UNSIGNED NOT NULL,
   `campus_id` INT UNSIGNED NOT NULL,
-  `faculty_member_id` INT UNSIGNED NOT NULL,
+  `faculty_id` INT UNSIGNED NOT NULL,
   `peoplesoft_course_id` VARCHAR(50) NOT NULL,
   `section_number` INT(3) UNSIGNED ZEROFILL NOT NULL,
   `name` VARCHAR(50) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE `sections` (
   FOREIGN KEY (course_id) references courses(id) on DELETE CASCADE,
   FOREIGN KEY (term_id) references terms(id) on DELETE CASCADE,
   FOREIGN KEY (campus_id) references campuses(id) on DELETE CASCADE,
-  FOREIGN KEY (faculty_member_id) references faculty_members(id) on DELETE CASCADE
+  FOREIGN KEY (faculty_id) references faculty(id) on DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `students` (
