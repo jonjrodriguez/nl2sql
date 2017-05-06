@@ -2,7 +2,7 @@ import os
 import nltk
 from Config import Config
 from database import Database, SchemaGraph
-from nlp import CorpusGenerator, CorpusClassifier
+from nlp import DBCorpusGenerator, DBCorpusClassifier
 
 class Setup(object):
     """
@@ -116,7 +116,7 @@ class Setup(object):
         base_path = self.config.get('PATHS', 'base')
         corpus_path = os.path.join(base_path, "database_corpus.p")
 
-        gen = CorpusGenerator(self.config.get('PATHS', 'stanford_jar'))
+        gen = DBCorpusGenerator(self.config.get('PATHS', 'stanford_jar'))
         gen.create_db_corpus(database, corpus_path)
 
         self.config.set("DATABASE", "corpus_path", corpus_path)
@@ -136,7 +136,7 @@ class Setup(object):
         base_path = self.config.get('PATHS', 'base')
         model_path = os.path.join(base_path, "db_model.p")
 
-        CorpusClassifier().train(corpus_path, model_path)
+        DBCorpusClassifier().train(corpus_path, model_path)
         self.config.set("MODELS", "db_model", model_path)
 
         self.comm.say("Database classifier trained.")

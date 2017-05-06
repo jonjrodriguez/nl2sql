@@ -1,7 +1,7 @@
 from Config import Config
 from communicate import Communicator
 from database import SchemaGraph
-from nlp import CorpusClassifier, Parser, SimFinder, Tagger, Tokenizer
+from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tagger, Tokenizer
 
 class Runner(object):
     """
@@ -12,7 +12,7 @@ class Runner(object):
         paths = dict(config.items("PATHS"))
         db_settings = dict(config.items("DATABASE"))
         models = dict(config.items("MODELS"))
-        
+
         self.communicator = Communicator()
         schema_graph = SchemaGraph(db_settings['graph_path'])
 
@@ -20,10 +20,10 @@ class Runner(object):
 
         tagger = Tagger(paths['stanford_jar'], paths['stanford_models'])
         parser = Parser(paths['stanford_jar'], paths['stanford_models_jar'])
-        corpus_classifier = CorpusClassifier(models['db_model'])
-        sim_finder = SimFinder(schema_graph)
+        corpus_classifier = DBCorpusClassifier(models['db_model'])
+        schema_classifier = DBSchemaClassifier(schema_graph)
 
-        self.pipeline = [tagger, parser, corpus_classifier, sim_finder]
+        self.pipeline = [tagger, parser, corpus_classifier, schema_classifier]
 
 
     def start(self):
@@ -39,7 +39,7 @@ class Runner(object):
 
             if statement.lower() == 'exit':
                 break
-            
+
             doc = self.make_doc(statement)
 
             for process in self.pipeline:
@@ -51,7 +51,7 @@ class Runner(object):
                 print
 
             self.communicator.resume()
-    
+
 
     def make_doc(self, statement):
         return {

@@ -2,23 +2,23 @@ import cPickle as pickle
 from nltk import MaxentClassifier
 from nlp.utils import shape
 
-class CorpusClassifier(object):
+class DBCorpusClassifier(object):
     """
-    Classify statements based on trained models
+    Classify tokens based on values in the database
     """
     def __init__(self, model_path=None):
         if model_path:
             with open(model_path, "rb") as model_file:
                 self.classifier = pickle.load(model_file)
-    
+
 
     def __call__(self, doc):
-        doc['corpus_class'] = self.classify(doc['tokens'])
+        doc['db_corpus'] = self.classify(doc['tokens'])
 
 
     def classify(self, tokens):
         history = []
-        for i, word in enumerate(tokens):
+        for i, _ in enumerate(tokens):
             feature_set = self.db_row_features(tokens, i, history)
             tag = self.classifier.classify(feature_set)
             history.append(tag)
