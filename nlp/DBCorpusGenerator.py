@@ -1,9 +1,9 @@
 import cPickle as pickle
 from nlp import Tagger
 
-class CorpusGenerator(object):
+class DBCorpusGenerator(object):
     """
-    Methods to generate corpuses for later tagging and use
+    Generate a corpus based on the database
     """
     def __init__(self):
         self.tagger = Tagger()
