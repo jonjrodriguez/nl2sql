@@ -116,7 +116,9 @@ class Setup(object):
         base_path = self.config.get('PATHS', 'base')
         corpus_path = os.path.join(base_path, "database_corpus.p")
 
-        CorpusGenerator().create_db_corpus(database, corpus_path)
+        gen = CorpusGenerator(self.config.get('PATHS', 'stanford_jar'))
+        gen.create_db_corpus(database, corpus_path)
+
         self.config.set("DATABASE", "corpus_path", corpus_path)
 
         self.comm.say("Database Corpus created.")

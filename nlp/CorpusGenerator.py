@@ -1,12 +1,12 @@
 import cPickle as pickle
-from nlp import Tagger
+from nlp import Tokenizer
 
 class CorpusGenerator(object):
     """
     Methods to generate corpuses for later tagging and use
     """
-    def __init__(self):
-        self.tagger = Tagger()
+    def __init__(self, jar_path):
+        self.tokenizer = Tokenizer(jar_path)
 
 
     def create_db_corpus(self, database, path):
@@ -28,7 +28,7 @@ class CorpusGenerator(object):
                 for i, value in enumerate(row):
                     label = "%s.%s" % (table, tables[table][i])
                     if " " in str(value):
-                        tokens = self.tagger.tokenize(value)
+                        tokens = self.tokenizer.tokenize(value)
                         for token in tokens:
                             sentence.append((token, label))
                     else:
