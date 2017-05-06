@@ -1,5 +1,5 @@
 from SQLNode import SQLNode
-from SQLNodeType import SQLNodeType
+from SQLNodeMultiChild import SQLNodeMultiChild
 
 
 class AttributeNode(SQLNodeMultiChild):
