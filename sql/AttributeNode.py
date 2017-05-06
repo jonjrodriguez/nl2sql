@@ -2,9 +2,9 @@ from SQLNode import SQLNode
 from SQLNodeType import SQLNodeType
 
 
-class AttributeNode(SQLNode):
+class AttributeNode(SQLNodeMultiChild):
     """
-    Should only have one child (belongs to one table). Part of a larger tree.
+    Could have multiple children. Part of a larger tree.
 
     attribute_node = AttributeNode()
     attribute_node.to_sql()
@@ -16,4 +16,5 @@ class AttributeNode(SQLNode):
 
     """
     def __init__(self, label = "*", child = None):
-        SQLNode.__init__(self, SQLNodeType.ATTRIBUTE_NODE, label, child)
+        SQLNodeMultiChild.__init__(self, SQLNodeType.ATTRIBUTE_NODE, label)
+        self.add_child(child)
