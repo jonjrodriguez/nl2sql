@@ -1,6 +1,10 @@
 import re
 from nltk.corpus import wordnet
 from nltk.metrics import jaccard_distance
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 def shape(word):
     if re.match(r'@', word, re.UNICODE):
@@ -41,3 +45,15 @@ def jaccard_sim(word1, word2):
     coefficient = 1 - jaccard_distance(set1, set2)
 
     return coefficient
+
+
+def load_pickle(path):
+    f = open(path, 'rb')
+    result = pickle.load(f)
+    f.close()
+    return result
+
+
+def save_pickle(data, path):
+    with open(path, "wb") as data_file:
+        pickle.dump(data, data_file)

@@ -2,8 +2,7 @@ import os
 import nltk
 from Config import Config
 from database import Database, SchemaGraph
-from nlp import DBCorpusGenerator, DBCorpusClassifier
-from classifier.QuestionClassifier import QuestionClassifier
+from nlp import DBCorpusGenerator, DBCorpusClassifier, QuestionCorpusClassifier
 
 
 class Setup(object):
@@ -26,12 +25,10 @@ class Setup(object):
         self.create_db_graph(force)
         self.create_db_corpus(force)
         self.train_db_classifier(force)
+        self.train_question_classifier(force)
 
         self.config.write()
 
-        self.comm.say("Training question classifier")
-        classifier = QuestionClassifier(False)
-        classifier.train()
         self.comm.say("Set up complete.")
 
 
@@ -146,3 +143,37 @@ class Setup(object):
         self.config.set("MODELS", "db_model", model_path)
 
         self.comm.say("Database classifier trained.")
+
+    def train_question_classifier(self, force):
+        if not force and self.config.has("MODELS", "question_model"):
+            self.comm.say("Question classifier already trained.")
+            return
+
+        self.comm.say("Training question classifier.")
+
+        base_path = self.config.get('PATHS', 'base')
+        model_path = os.path.join(base_path, "question_model.p")
+
+        QuestionCorpusClassifier().train(model_path)
+        self.config.set("MODELS", "question_model", model_path)
+
+        self.comm.say("Question classifier trained.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

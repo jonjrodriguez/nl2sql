@@ -1,9 +1,7 @@
 from Config import Config
 from communicate import Communicator
 from database import SchemaGraph
-from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tagger, Tokenizer
-from classifier.QuestionClassifier import QuestionClassifier
-
+from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tagger, Tokenizer, QuestionCorpusClassifier
 
 class Runner(object):
     """
@@ -24,10 +22,9 @@ class Runner(object):
         parser = Parser(paths['stanford_jar'], paths['stanford_models_jar'])
         corpus_classifier = DBCorpusClassifier(models['db_model'])
         schema_classifier = DBSchemaClassifier(schema_graph)
+        question_classifier = QuestionCorpusClassifier(models['question_model'])
 
-        self.pipeline = [tagger, parser, corpus_classifier, schema_classifier]
-
-        self.classifier = QuestionClassifier()
+        self.pipeline = [question_classifier, tagger, parser, corpus_classifier, schema_classifier]
 
 
     def start(self):
@@ -55,8 +52,6 @@ class Runner(object):
                 print
 
             self.communicator.resume()
-
-            print self.classifier.classify(statement)
 
 
     def make_doc(self, statement):
