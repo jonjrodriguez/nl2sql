@@ -1,7 +1,7 @@
 from Config import Config
 from communicate import Communicator
 from database import SchemaGraph
-from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tagger, Tokenizer, QuestionCorpusClassifier
+from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tagger, Tokenizer, QuestionCorpusClassifier, QuestionChunker
 
 class Runner(object):
     """
@@ -23,8 +23,9 @@ class Runner(object):
         corpus_classifier = DBCorpusClassifier(models['db_model'])
         schema_classifier = DBSchemaClassifier(schema_graph)
         question_classifier = QuestionCorpusClassifier(models['question_model'])
+        question_chunker = QuestionChunker()
 
-        self.pipeline = [question_classifier, tagger, parser, corpus_classifier, schema_classifier]
+        self.pipeline = [question_classifier, tagger, parser, corpus_classifier, schema_classifier, question_chunker]
 
 
     def start(self):

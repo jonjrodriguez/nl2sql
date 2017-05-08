@@ -57,3 +57,17 @@ def load_pickle(path):
 def save_pickle(data, path):
     with open(path, "wb") as data_file:
         pickle.dump(data, data_file)
+
+COUNT_TYPE  = r'(how many|count of|number of)'
+LIST_TYPE   = r'(list|several|few|one|two|three|four|five|six|seven|eight|nine|ten)'
+OBJECT_TYPE = r'(return|give me|who|what|event)'
+TIME_TYPE  = r'((1[012]|[1-9]):[0-5][0-9](\s)?(?i)(\s)*(am|pm))'
+DATE_TYPE  = r'((0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/((19|20)\d\d))'
+
+ALL_TYPES = {
+    'COUNT': COUNT_TYPE,
+    'LIST': LIST_TYPE,
+    'OBJECT': OBJECT_TYPE,
+    'TIME': TIME_TYPE,
+    'DATE': DATE_TYPE
+}

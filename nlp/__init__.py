@@ -5,3 +5,4 @@ from nlp.DBSchemaClassifier import DBSchemaClassifier
 from nlp.DBCorpusClassifier import DBCorpusClassifier
 from nlp.DBCorpusGenerator import DBCorpusGenerator
 from nlp.QuestionCorpusClassifier import QuestionCorpusClassifier
+from nlp.QuestionChunker import QuestionChunker
