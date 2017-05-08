@@ -59,6 +59,14 @@ def save_pickle(data, path):
         pickle.dump(data, data_file)
 
 COUNT_TYPE  = r'(how many|count of|number of)'
+OPERATOR_EQUALITY_TYPE  = r'(equals)'
+OPERATOR_INVERT_TYPE  = r'(not)'
+OPERATOR_MANY_TYPE = r'(in)'
+OPERATOR_MAX_TYPE = r'(most|greatest|best|largest|max)'
+OPERATOR_MIN_TYPE = r'(least|smallest|worst|min)'
+OPERATOR_GREATER_TYPE = r'([greater|bigger|more][than|then])'
+OPERATOR_LESS_TYPE = r'([less|fewer][than|then])'
+OPERATOR_TYPE  = [OPERATOR_EQUALITY_TYPE, OPERATOR_INVERT_TYPE, OPERATOR_MANY_TYPE, OPERATOR_MAX_TYPE, OPERATOR_MIN_TYPE, OPERATOR_GREATER_TYPE, OPERATOR_LESS_TYPE]
 LIST_TYPE   = r'(list|several|few|one|two|three|four|five|six|seven|eight|nine|ten)'
 OBJECT_TYPE = r'(return|give me|who|what|event)'
 TIME_TYPE  = r'((1[012]|[1-9]):[0-5][0-9](\s)?(?i)(\s)*(am|pm))'
@@ -69,5 +77,6 @@ ALL_TYPES = {
     'LIST': LIST_TYPE,
     'OBJECT': OBJECT_TYPE,
     'TIME': TIME_TYPE,
-    'DATE': DATE_TYPE
+    'DATE': DATE_TYPE,
+    'OPERATOR': OPERATOR_TYPE
 }
