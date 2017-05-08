@@ -1,3 +1,4 @@
+import re
 from math import sqrt
 from nlp.utils import jaccard_sim, wup_sim
 from database import NodeType
@@ -11,7 +12,21 @@ class DBSchemaClassifier(object):
 
 
     def __call__(self, doc):
-        doc['db_schema'] = self.find_db_matches(doc['tokens'])
+        def filter_tree(tree):
+            if tree.parent() is None:
+                return False
+
+            noun_phrase = tree.parent().label() == 'NP'
+            noun = re.match("NN.*", tree.label())
+
+            return noun_phrase and noun
+
+        # limiting classification to nouns that are children of a NP
+        # May need to expand this filter (defined above)
+        trees = [tree.leaves() for tree in doc['parse'].subtrees(filter_tree)]
+        tokens = [token for leaves in trees for token in leaves]
+
+        doc['db_schema'] = self.find_db_matches(tokens)
 
 
     def find_db_matches(self, tokens, cutoff=.7, table=''):

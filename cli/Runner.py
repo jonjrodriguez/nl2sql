@@ -18,12 +18,13 @@ class Runner(object):
 
         self.tokenizer = Tokenizer(paths['stanford_jar'])
 
-        tagger = Tagger(paths['stanford_jar'], paths['stanford_models'])
+        # tagger = Tagger(paths['stanford_jar'], paths['stanford_models'])
         parser = Parser(paths['stanford_jar'], paths['stanford_models_jar'])
         corpus_classifier = DBCorpusClassifier(models['db_model'])
         schema_classifier = DBSchemaClassifier(schema_graph)
 
-        self.pipeline = [tagger, parser, corpus_classifier, schema_classifier]
+        # self.pipeline = [tagger, parser, schema_classifier, corpus_classifier]
+        self.pipeline = [parser, schema_classifier, corpus_classifier]
 
 
     def start(self):
