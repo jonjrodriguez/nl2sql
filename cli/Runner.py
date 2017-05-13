@@ -1,7 +1,7 @@
 from Config import Config
 from communicate import Communicator
 from database import SchemaGraph
-from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tagger, Tokenizer, QuestionCorpusClassifier, QuestionChunker
+from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tagger, Tokenizer, NodeGenerator, Sanitizer
 
 class Runner(object):
     """
@@ -18,15 +18,14 @@ class Runner(object):
 
         self.tokenizer = Tokenizer(paths['stanford_jar'])
 
-        tagger = Tagger(paths['stanford_jar'], paths['stanford_models'])
+        #tagger = Tagger(paths['stanford_jar'], paths['stanford_models'])
         parser = Parser(paths['stanford_jar'], paths['stanford_models_jar'])
         corpus_classifier = DBCorpusClassifier(models['db_model'])
         schema_classifier = DBSchemaClassifier(schema_graph)
-        question_classifier = QuestionCorpusClassifier(models['question_model'])
-        #question_chunker = QuestionChunker()
+        sanitizer = Sanitizer()
+        node_generator = NodeGenerator()
 
-        #self.pipeline = [question_classifier, tagger, parser, corpus_classifier, schema_classifier, question_chunker]
-        self.pipeline = [question_classifier, tagger, parser, corpus_classifier, schema_classifier]
+        self.pipeline = [sanitizer, parser, node_generator, corpus_classifier, schema_classifier]
 
 
     def start(self):
@@ -48,10 +47,10 @@ class Runner(object):
             for process in self.pipeline:
                 process(doc)
 
-            for key, value in doc.iteritems():
-                print "%s: " % key
-                print value
-                print
+            #for key, value in doc.iteritems():
+            #    print "%s: " % key
+            #    print value
+            #    print
 
             self.communicator.resume()
 

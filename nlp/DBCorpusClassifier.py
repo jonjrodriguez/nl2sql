@@ -1,7 +1,6 @@
 import cPickle as pickle
-import re
 from nltk import MaxentClassifier
-from nlp.utils import shape, ALL_TYPES
+from nlp.utils import shape
 
 class DBCorpusClassifier(object):
     """

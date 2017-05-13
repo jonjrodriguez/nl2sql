@@ -1,22 +1,37 @@
-import re
-from utils import ALL_TYPES
-
+from sql import AttributeNode, SelectNode, TableNode, SQLTree, FunctionNode, FunctionNodeType
 
 class NodeGenerator(object):
     def __init__(self):
         pass
 
     def __call__(self, doc):
-        self.getNodeType(doc['text'])
+        self.tree = SelectNode()
+        for parse in doc['parse']:
+            self.tree.add_child(self.parseTuple(tuple(parse)))
 
-    def getNodeType(self, word):
-        for feature_type, expression in ALL_TYPES.iteritems():
-            if (feature_type == "OPERATOR"):
-                for operator_type, expr in expression:
-                    p = re.compile(expression, re.IGNORECASE)
-                    if p.match(word):
-                        return feature_type
+        print SQLTree(self.tree).get_sql()
 
-            p = re.compile(expression, re.IGNORECASE)
-            if p.match(word):
-                return feature_type
+    def parseTuple(self, tpl):
+        if (type(tpl) == tuple):
+            k, v = tpl
+            new_node = self.parseTuple(k)
+            if new_node:
+                new_node.add_child(self.parseTuple(v))
+
+            return new_node
+        else:
+            return self.getNodeType(tpl)
+
+
+    def getNodeType(self, node):
+        if node:
+            if (node[0] == "LIST"):
+                return AttributeNode()
+
+            if (node[0] == "COUNT"):
+                return FunctionNode(None, FunctionNodeType.COUNT)
+
+            # Sections would have been identified as a table
+            # And not hardcoded like this
+            if (node[0]) == "sections":
+                return TableNode("Sections")

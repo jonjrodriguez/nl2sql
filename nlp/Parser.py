@@ -10,8 +10,8 @@ class Parser(object):
 
 
     def __call__(self, doc):
-        doc['parse'] = self.parse(doc['text'])
-        doc['dep_parse'] = self.dep_parse(doc['text'])
+        doc['parse'] = self.parse(doc['sanitized_text'])
+        doc['dep_parse'] = self.dep_parse(doc['sanitized_text'])
 
 
     def parse(self, statement):

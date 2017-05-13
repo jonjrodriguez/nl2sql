@@ -12,5 +12,5 @@ class TableNode(SQLNodeMultiChild):
 
     """
     def __init__(self, label, child = None):
-        SQLNodeMultiChild.__init__(self, SQLNodeType.TABLE_NODE, label)
+        super(TableNode,self).__init__(SQLNodeType.TABLE_NODE, label)
         self.add_child(child)
