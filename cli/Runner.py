@@ -25,7 +25,7 @@ class Runner(object):
         sanitizer = Sanitizer()
         node_generator = NodeGenerator()
 
-        self.pipeline = [sanitizer, parser, node_generator, corpus_classifier, schema_classifier]
+        self.pipeline = [sanitizer, parser, corpus_classifier, schema_classifier, node_generator]
 
 
     def start(self):
@@ -47,10 +47,10 @@ class Runner(object):
             for process in self.pipeline:
                 process(doc)
 
-            #for key, value in doc.iteritems():
-            #    print "%s: " % key
-            #    print value
-            #    print
+            for key, value in doc.iteritems():
+                print "%s: " % key
+                print value
+                print
 
             self.communicator.resume()
 

@@ -1,5 +1,5 @@
 import re
-from utils import ALL_TYPES
+from utils import ALL_TYPES, STOP_TYPE_NAME
 
 
 class Sanitizer(object):
@@ -17,7 +17,7 @@ class Sanitizer(object):
             p = re.search(expression, result)
             if p:
                 match = p.groups()[0]
-                if (feature_type == "STOP"):
+                if (feature_type == STOP_TYPE_NAME):
                     result = result.replace(match, "")
                 else:
                     result = result.replace(match, feature_type)

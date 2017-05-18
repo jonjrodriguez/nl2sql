@@ -14,6 +14,7 @@ class SQLTree(object):
         if not self.root.type is SQLNodeType.SELECT_NODE:
             raise ValueError("Root type is not SELECT_NODE")
         self.select = self.root.to_sql()
+        print self.root.get_child()
         self.get_attributes_and_tables(self.root.get_child())
         return " ".join([self.select, self.attributes, "FROM", self.tables, ";"])
 
@@ -55,16 +56,16 @@ class SQLTree(object):
     def set_tables_from_attributes(self,second_level):
         flattened = [child2 for child in second_level for child2 in child.get_child() ]
         self.tables =  ",".join(set([x.to_sql() for x in flattened]))
-
-
-root = SelectNode()
-attribute_node = AttributeNode("*")
-table_node = TableNode("students")
-function_node = FunctionNode(table_node, FunctionNodeType.COUNT)
-#attribute_node.add_child(table_node)
-# attribute_node2 = AttributeNode("id")
-# table_node2 = TableNode("students")
-# attribute_node2.add_child(table_node2)
-root.add_child(function_node)
-# root.add_child(attribute_node2)
-print SQLTree(root).get_sql()
+#
+#
+# root = SelectNode()
+# attribute_node = AttributeNode("*")
+# table_node = TableNode("students")
+# function_node = FunctionNode(table_node, FunctionNodeType.COUNT)
+# #attribute_node.add_child(table_node)
+# # attribute_node2 = AttributeNode("id")
+# # table_node2 = TableNode("students")
+# # attribute_node2.add_child(table_node2)
+# root.add_child(function_node)
+# # root.add_child(attribute_node2)
+# print SQLTree(root).get_sql()
