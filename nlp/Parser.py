@@ -1,4 +1,5 @@
 from nltk.parse.stanford import StanfordParser, StanfordDependencyParser
+from nltk.tree import ParentedTree
 
 class Parser(object):
     """
@@ -10,7 +11,7 @@ class Parser(object):
 
 
     def __call__(self, doc):
-        doc['parse'] = self.parse(doc['text'])
+        doc['parse'] = ParentedTree.convert(self.parse(doc['text']))
         doc['dep_parse'] = self.dep_parse(doc['text'])
 
 
