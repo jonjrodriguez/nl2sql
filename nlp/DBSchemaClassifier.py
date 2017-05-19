@@ -59,7 +59,7 @@ class DBSchemaClassifier(object):
         if tree.parent() is None:
             return False
 
-        noun_phrase = tree.parent().label() == 'NP'
+        noun_phrase = re.match("NP|WHNP", tree.parent().label())
         noun = re.match("NN.*", tree.label())
 
         return noun_phrase and noun
