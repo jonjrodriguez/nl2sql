@@ -12,24 +12,14 @@ class DBSchemaClassifier(object):
 
 
     def __call__(self, doc):
-        def filter_tree(tree):
-            if tree.parent() is None:
-                return False
+        trees = [tree.leaves() for tree in doc['parse'].subtrees(self.filter_tree)]
+        tokens = [token for leaves in trees for token in leaves if token not in doc['tagged']]
 
-            noun_phrase = tree.parent().label() == 'NP'
-            noun = re.match("NN.*", tree.label())
-
-            return noun_phrase and noun
-
-        # limiting classification to nouns that are children of a NP
-        # May need to expand this filter (defined above)
-        trees = [tree.leaves() for tree in doc['parse'].subtrees(filter_tree)]
-        tokens = [token for leaves in trees for token in leaves]
-
-        doc['db_schema'] = self.find_db_matches(tokens)
+        doc['db_schema'] = [match for match in self.find_db_matches(tokens) if match[1]]
+        doc['tagged'] += [match[0] for match in doc['db_schema']]
 
 
-    def find_db_matches(self, tokens, cutoff=.7, table=''):
+    def find_db_matches(self, tokens, cutoff=.8, table=''):
         nodes = [node for node in self.nodes if node.label.startswith(table)]
 
         matches = []
@@ -52,8 +42,24 @@ class DBSchemaClassifier(object):
         return sorted(matches, key=lambda x: x[1], reverse=True)
 
 
-    def similarity(self, word1, word2):
+    @staticmethod
+    def similarity(word1, word2):
         wup = wup_sim(word1, word2)
         jaccard = jaccard_sim(word1, word2)
 
         return max(wup, sqrt(jaccard))
+
+
+    @staticmethod
+    def filter_tree(tree):
+        """
+        Filters parse tree to Nouns located in Noun Phrases
+        May need to expand or remove this filter
+        """
+        if tree.parent() is None:
+            return False
+
+        noun_phrase = tree.parent().label() == 'NP'
+        noun = re.match("NN.*", tree.label())
+
+        return noun_phrase and noun
