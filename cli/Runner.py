@@ -1,7 +1,7 @@
 from Config import Config
 from communicate import Communicator
 from database import SchemaGraph
-from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tagger, Tokenizer
+from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tagger, Tokenizer, NodeGenerator, Sanitizer
 
 class Runner(object):
     """
@@ -18,12 +18,14 @@ class Runner(object):
 
         self.tokenizer = Tokenizer(paths['stanford_jar'])
 
-        tagger = Tagger(paths['stanford_jar'], paths['stanford_models'])
+        #tagger = Tagger(paths['stanford_jar'], paths['stanford_models'])
         parser = Parser(paths['stanford_jar'], paths['stanford_models_jar'])
         corpus_classifier = DBCorpusClassifier(models['db_model'])
         schema_classifier = DBSchemaClassifier(schema_graph)
+        sanitizer = Sanitizer()
+        node_generator = NodeGenerator()
 
-        self.pipeline = [tagger, parser, corpus_classifier, schema_classifier]
+        self.pipeline = [sanitizer, parser, corpus_classifier, schema_classifier, node_generator]
 
 
     def start(self):

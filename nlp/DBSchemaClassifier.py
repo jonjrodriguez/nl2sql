@@ -11,7 +11,7 @@ class DBSchemaClassifier(object):
 
 
     def __call__(self, doc):
-        doc['db_schema'] = self.find_db_matches(doc['tokens'])
+        doc['db_schema'] = self.find_db_matches(doc['sanitized_text'].split())
 
 
     def find_db_matches(self, tokens, cutoff=.7, table=''):

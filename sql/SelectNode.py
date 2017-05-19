@@ -19,7 +19,7 @@ class SelectNode(SQLNodeMultiChild):
 
     """
     def __init__(self, label = "SELECT", child = None):
-        SQLNodeMultiChild.__init__(self, SQLNodeType.SELECT_NODE, label)
+        super(SelectNode,self).__init__(SQLNodeType.SELECT_NODE, label)
         self.add_child(child)
 
 
