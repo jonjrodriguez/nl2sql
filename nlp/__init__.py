@@ -4,3 +4,5 @@ from nlp.Tokenizer import Tokenizer
 from nlp.DBSchemaClassifier import DBSchemaClassifier
 from nlp.DBCorpusClassifier import DBCorpusClassifier
 from nlp.DBCorpusGenerator import DBCorpusGenerator
+from nlp.QuestionClassifier import QuestionClassifier
+from nlp.ClassifierExpressions import *
