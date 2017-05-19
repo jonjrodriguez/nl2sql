@@ -15,9 +15,9 @@ class Seeder(object):
 
         seeds['terms'] = self.create_terms()
         seeds['campuses'] = self.create_campuses()
-        seeds['faculty_members'] = self.create_faculty_members()
+        seeds['faculty'] = self.create_faculty()
         seeds['courses'] = self.create_courses(seeds['campuses'])
-        seeds['sections'] = self.create_sections(seeds['courses'], seeds['terms'], seeds['campuses'], seeds['faculty_members'])
+        seeds['sections'] = self.create_sections(seeds['courses'], seeds['terms'], seeds['campuses'], seeds['faculty'])
         seeds['students'] = self.create_students()
         seeds['registrations'] = self.create_registrations(seeds['students'], seeds['sections'])
 
@@ -50,7 +50,7 @@ class Seeder(object):
         return campuses
 
 
-    def create_faculty_members(self):
+    def create_faculty(self):
         faculty = []
         for i in range(1, 20):
             faculty.append({
@@ -94,7 +94,7 @@ class Seeder(object):
                 'course_id': course['id'],
                 'term_id': term['id'],
                 'campus_id': choice(campuses)['id'],
-                'faculty_member_id': choice(faculty)['id'],
+                'faculty_id': choice(faculty)['id'],
                 'peoplesoft_course_id': course['peoplesoft_course_id'],
                 'section_number': self.fake.random_int(1, 50),
                 'name': course['name'],
