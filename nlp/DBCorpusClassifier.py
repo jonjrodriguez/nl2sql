@@ -17,8 +17,13 @@ class DBCorpusClassifier(object):
         trees = [tree.leaves() for tree in doc['parse'].subtrees(self.filter_tree)]
         tokens = [token for leaves in trees for token in leaves if token not in doc['tagged']]
 
-        doc['db_corpus'] = self.classify(tokens)
-        doc['tagged'] += [match[0] for match in doc['db_corpus']]
+        tags = self.classify(tokens)
+        
+        for tag in tags:
+            doc['tagged'][tag[0]] = {
+                'type': 'corpus',
+                'tags': tag[1]
+            }
 
 
     @staticmethod
