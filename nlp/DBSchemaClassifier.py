@@ -15,8 +15,13 @@ class DBSchemaClassifier(object):
         trees = [tree.leaves() for tree in doc['parse'].subtrees(self.filter_tree)]
         tokens = [token for leaves in trees for token in leaves if token not in doc['tagged']]
 
-        doc['db_schema'] = [match for match in self.find_db_matches(tokens) if match[1]]
-        doc['tagged'] += [match[0] for match in doc['db_schema']]
+        matches = [match for match in self.find_db_matches(tokens) if match[1]]
+
+        for match in matches:
+            doc['tagged'][match[0]] = {
+                'type': 'schema',
+                'tags': match[1]
+            }
 
 
     def find_db_matches(self, tokens, cutoff=.8, table=''):

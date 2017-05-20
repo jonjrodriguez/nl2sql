@@ -56,5 +56,5 @@ class Runner(object):
         return {
             'text': statement,
             'tokens': self.tokenizer(statement),
-            'tagged': []
+            'tagged': {}
         }
