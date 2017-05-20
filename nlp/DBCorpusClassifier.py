@@ -1,3 +1,4 @@
+import re
 import cPickle as pickle
 from nltk import MaxentClassifier
 from nlp.utils import shape
@@ -13,17 +14,42 @@ class DBCorpusClassifier(object):
 
 
     def __call__(self, doc):
-        doc['db_corpus'] = self.classify(doc['tokens'])
+        trees = [tree.leaves() for tree in doc['parse'].subtrees(self.filter_tree)]
+        tokens = [token for leaves in trees for token in leaves if token not in doc['tagged']]
+
+        doc['db_corpus'] = self.classify(tokens)
+        doc['tagged'] += [match[0] for match in doc['db_corpus']]
 
 
-    def classify(self, tokens):
+    @staticmethod
+    def filter_tree(tree):
+        """
+        Filters parse tree to certain POS in Noun Phrases
+        May need to expand or remove this filter
+        """
+        if tree.parent() is None:
+            return False
+
+        noun_phrase = re.match("NP", tree.parent().label())
+        pos = re.match("NN.*|JJ|CD", tree.label())
+
+        return noun_phrase and pos
+
+
+    def classify(self, tokens, limit=3):
         history = []
+        results = []
+
         for i, _ in enumerate(tokens):
             feature_set = self.db_row_features(tokens, i, history)
-            tag = self.classifier.classify(feature_set)
-            history.append(tag)
 
-        return zip(tokens, history)
+            pdist = self.classifier.prob_classify(feature_set)
+            labels = sorted(pdist.samples(), key=pdist.prob, reverse=True)
+
+            history.append(pdist.max())
+            results.append([(label, pdist.prob(label)) for label in labels[:limit]])
+
+        return zip(tokens, results)
 
 
     def train(self, corpus_path, model_path):
