@@ -41,3 +41,8 @@ def jaccard_sim(word1, word2):
     coefficient = 1 - jaccard_distance(set1, set2)
 
     return coefficient
+
+def merge_results(dictA, dictB):
+    result = dictA.copy()
+    result.update(dictB)
+    return result
