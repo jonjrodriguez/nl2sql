@@ -1,7 +1,7 @@
 from Config import Config
 from communicate import Communicator
 from database import SchemaGraph
-from nlp import DBCorpusClassifier, DBSchemaClassifier, Parser, Tokenizer
+from nlp import DBCorpusClassifier, DBSchemaClassifier, SQLGrammarClassifier, Parser, Tokenizer
 
 class Runner(object):
     """
@@ -19,10 +19,11 @@ class Runner(object):
         self.tokenizer = Tokenizer(paths['stanford_jar'])
 
         parser = Parser(paths['stanford_jar'], paths['stanford_models_jar'])
+        grammar_classifier = SQLGrammarClassifier(models['sql_model'])
         corpus_classifier = DBCorpusClassifier(models['db_model'])
         schema_classifier = DBSchemaClassifier(schema_graph)
 
-        self.pipeline = [parser, schema_classifier, corpus_classifier]
+        self.pipeline = [parser, grammar_classifier, schema_classifier, corpus_classifier]
 
 
     def start(self):
@@ -44,10 +45,11 @@ class Runner(object):
             for process in self.pipeline:
                 process(doc)
 
-            for key, value in doc.iteritems():
-                print "%s: " % key
-                print value
-                print
+            for key, value in doc['tagged'].iteritems():
+                print key, value
+
+            print
+            print doc['dep_parse'].tree().pretty_print()
 
             self.communicator.resume()
 
