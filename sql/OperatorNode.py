@@ -15,3 +15,7 @@ class OperatorNode(SQLNode):
 
     def to_sql(self):
         return self.operator_type
+
+
+    def __repr__(self):
+        return "%s['%s']" % (type(self).__name__, self.operator_type)
