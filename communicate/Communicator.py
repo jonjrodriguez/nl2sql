@@ -1,3 +1,4 @@
+import re
 from random import choice
 from communicate import phrases
 
@@ -41,30 +42,31 @@ class Communicator(object):
         print "\n   %s\n" % message
         exit()
 
-    def refineResult(self, token, nodeTag):
-        selected_term = 0
+
+    def choose(self, token, options):
+        selected = 0
 
         # Constructing the message that will be displayed to the user
-        options = ['Which of these options best categorizes your use of the term ' + token + ' ?']
-        for i in range(0, len(nodeTag)):
-            term, score = nodeTag[i]
-            terms = term.split(".")
+        choices = ['Which of these options best categorizes your use of the term ' + token + ' ?']
+        for i in range(0, len(options)):
+            term, _ = options[i]
+            terms = re.split(r'\W+|_', term)
             formatted_terms = " ".join(terms)
-            options.append(str(i + 1) + ") " + formatted_terms.capitalize())
+            choices.append(str(i + 1) + ") " + formatted_terms.title())
 
-        output = "\n".join(options)
+        output = "\n".join(choices)
         output += "\n>"
-        selected_term = self.ask(output)
+        selected = self.ask(output)
 
         # Validation to make sure the user only enters a valid option
         while True:
-            isValidInput = selected_term.isdigit() and (int(selected_term) > 0) and (
-                int(selected_term) <= len(nodeTag))
+            is_valid = selected.isdigit() and (int(selected) > 0) and (
+                int(selected) <= len(options))
 
-            if not isValidInput:
-                self.say("You have made an invalid entry. Please enter a number from 1 to " + str(len(nodeTag)))
-                selected_term = self.ask(output)
+            if not is_valid:
+                self.say("You have made an invalid entry. Please enter a number from 1 to %s" % len(options))
+                selected = self.ask(output)
             else:
                 break
 
-        return int(selected_term) - 1
+        return int(selected) - 1

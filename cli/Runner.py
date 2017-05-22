@@ -26,9 +26,7 @@ class Runner(object):
 
         self.pipeline = [parser, grammar_classifier, schema_classifier, corpus_classifier]
 
-        node_generator = NodeGenerator()
-
-        self.node_pipeline = [node_generator]
+        self.node_generator = NodeGenerator(self.communicator)
 
 
     def start(self):
@@ -50,14 +48,9 @@ class Runner(object):
             for process in self.pipeline:
                 process(doc)
 
-            for process in self.node_pipeline:
-                process(doc)
+            tree = self.node_generator(doc)
 
-            for key, value in doc['tagged'].iteritems():
-                print key, value
-
-            print
-            print doc['dep_parse'].tree().pretty_print()
+            print tree
 
             self.communicator.resume()
 
