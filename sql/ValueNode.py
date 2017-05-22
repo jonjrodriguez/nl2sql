@@ -16,7 +16,5 @@ class ValueNode(SQLNode):
 
     """
     def __init__(self, label = "", child = None):
-        SQLNode.__init__(self, SQLNodeType.VALUE_NODE, label, child)
-
-
-print ValueNode("students").to_sql()
+        super(ValueNode, self).__init__(SQLNodeType.VALUE_NODE, label)
+        self.add_child(child)
