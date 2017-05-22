@@ -8,3 +8,4 @@ class SQLNodeType(object):
     ATTRIBUTE_NODE  = 4
     FUNCTION_NODE   = 5
     OPERATOR_NODE   = 6
+    LIMIT_NODE      = 7

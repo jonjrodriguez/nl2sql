@@ -1,5 +1,5 @@
-from SQLNode import SQLNode
-from SQLNodeMultiChild import SQLNodeMultiChild
+from sql.SQLNodeType import SQLNodeType
+from sql.SQLNodeMultiChild import SQLNodeMultiChild
 
 
 class AttributeNode(SQLNodeMultiChild):
@@ -15,6 +15,8 @@ class AttributeNode(SQLNodeMultiChild):
     => names
 
     """
-    def __init__(self, label = "*", child = None):
-        SQLNodeMultiChild.__init__(self, SQLNodeType.ATTRIBUTE_NODE, label)
+    def __init__(self, label="*", child=None, parent=None):
+        super(AttributeNode, self).__init__(SQLNodeType.ATTRIBUTE_NODE, label)
+
         self.add_child(child)
+        self.add_parent(parent)
