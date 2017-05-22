@@ -1,6 +1,6 @@
-from sql import SQLNode
-from sql import SQLNodeType
-from sql import OperatorNodeType
+from sql.SQLNode import SQLNode
+from sql.SQLNodeType import SQLNodeType
+from sql.OperatorNodeType import OperatorNodeType
 
 
 class OperatorNode(SQLNode):

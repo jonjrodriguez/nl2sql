@@ -2,6 +2,7 @@ from Config import Config
 from communicate import Communicator
 from database import SchemaGraph
 from nlp import DBCorpusClassifier, DBSchemaClassifier, SQLGrammarClassifier, Parser, Tokenizer
+from sql import NodeGenerator
 
 class Runner(object):
     """
@@ -25,6 +26,10 @@ class Runner(object):
 
         self.pipeline = [parser, grammar_classifier, schema_classifier, corpus_classifier]
 
+        node_generator = NodeGenerator()
+
+        self.node_pipeline = [node_generator]
+
 
     def start(self):
         self.communicator.say("Type 'exit' to quit")
@@ -43,6 +48,9 @@ class Runner(object):
             doc = self.make_doc(statement)
 
             for process in self.pipeline:
+                process(doc)
+
+            for process in self.node_pipeline:
                 process(doc)
 
             for key, value in doc['tagged'].iteritems():

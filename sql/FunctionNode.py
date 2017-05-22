@@ -11,7 +11,6 @@ class FunctionNode(SQLNode):
 
         self.func_type = func_type
 
-
     def to_sql(self):
         column_name = "*"
         if self.child is not None and self.child.type is SQLNodeType.ATTRIBUTE_NODE:

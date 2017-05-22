@@ -40,3 +40,31 @@ class Communicator(object):
     def error(self, message):
         print "\n   %s\n" % message
         exit()
+
+    def refineResult(self, token, nodeTag):
+        selected_term = 0
+
+        # Constructing the message that will be displayed to the user
+        options = ['Which of these options best categorizes your use of the term ' + token + ' ?']
+        for i in range(0, len(nodeTag)):
+            term, score = nodeTag[i]
+            terms = term.split(".")
+            formatted_terms = " ".join(terms)
+            options.append(str(i + 1) + ") " + formatted_terms.capitalize())
+
+        output = "\n".join(options)
+        output += "\n>"
+        selected_term = self.ask(output)
+
+        # Validation to make sure the user only enters a valid option
+        while True:
+            isValidInput = selected_term.isdigit() and (int(selected_term) > 0) and (
+                int(selected_term) <= len(nodeTag))
+
+            if not isValidInput:
+                self.say("You have made an invalid entry. Please enter a number from 1 to " + str(len(nodeTag)))
+                selected_term = self.ask(output)
+            else:
+                break
+
+        return int(selected_term) - 1

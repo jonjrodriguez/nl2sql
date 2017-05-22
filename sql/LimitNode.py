@@ -1,6 +1,5 @@
-from sql import SQLNode
-from sql import SQLNodeType
-
+from sql.SQLNode import SQLNode
+from sql.SQLNodeType import SQLNodeType
 
 class LimitNode(SQLNode):
     """
