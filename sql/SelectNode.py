@@ -1,5 +1,5 @@
-from SQLNodeMultiChild import SQLNodeMultiChild
-from SQLNodeType import SQLNodeType
+from sql.SQLNodeMultiChild import SQLNodeMultiChild
+from sql.SQLNodeType import SQLNodeType
 
 class SelectNode(SQLNodeMultiChild):
     """
@@ -18,8 +18,8 @@ class SelectNode(SQLNodeMultiChild):
     => SELECT * FROM 'students';
 
     """
-    def __init__(self, label = "SELECT", child = None):
-        super(SelectNode,self).__init__(SQLNodeType.SELECT_NODE, label)
+    def __init__(self, label="SELECT", child=None):
+        super(SelectNode, self).__init__(SQLNodeType.SELECT_NODE, label)
         self.add_child(child)
 
 

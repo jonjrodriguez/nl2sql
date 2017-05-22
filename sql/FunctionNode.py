@@ -1,10 +1,10 @@
-from SQLNode import SQLNode
-from SQLNodeType import SQLNodeType
+from sql.SQLNode import SQLNode
+from sql.SQLNodeType import SQLNodeType
 
 
 class FunctionNode(SQLNode):
-    def __init__(self, child = None, func_type = None):
-        super(FunctionNode,self).__init__(SQLNodeType.FUNCTION_NODE, "function")
+    def __init__(self, child=None, func_type=None):
+        super(FunctionNode, self).__init__(SQLNodeType.FUNCTION_NODE, "function")
         self.add_child(child)
         self.func_type = func_type
 

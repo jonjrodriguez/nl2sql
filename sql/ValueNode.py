@@ -1,5 +1,5 @@
-from SQLNode import SQLNode
-from SQLNodeType import SQLNodeType
+from sql.SQLNode import SQLNode
+from sql.SQLNodeType import SQLNodeType
 
 
 class ValueNode(SQLNode):
@@ -12,9 +12,9 @@ class ValueNode(SQLNode):
 
     value_node = ValueNode()
     value_node.to_sql()
-    => 
+    =>
 
     """
-    def __init__(self, label = "", child = None):
+    def __init__(self, label="", child=None):
         super(ValueNode, self).__init__(SQLNodeType.VALUE_NODE, label)
         self.add_child(child)

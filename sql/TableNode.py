@@ -1,5 +1,5 @@
-from SQLNodeType import SQLNodeType
-from SQLNodeMultiChild import SQLNodeMultiChild
+from sql.SQLNodeType import SQLNodeType
+from sql.SQLNodeMultiChild import SQLNodeMultiChild
 
 
 class TableNode(SQLNodeMultiChild):
@@ -11,6 +11,6 @@ class TableNode(SQLNodeMultiChild):
     => students
 
     """
-    def __init__(self, label, child = None):
-        super(TableNode,self).__init__(SQLNodeType.TABLE_NODE, label)
+    def __init__(self, label, child=None):
+        super(TableNode, self).__init__(SQLNodeType.TABLE_NODE, label)
         self.add_child(child)
