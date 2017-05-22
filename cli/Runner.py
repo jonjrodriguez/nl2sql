@@ -49,6 +49,9 @@ class Runner(object):
                 process(doc)
 
             tree = self.node_generator(doc)
+
+            print tree
+            print
             tree.pretty_print()
 
             self.communicator.resume()

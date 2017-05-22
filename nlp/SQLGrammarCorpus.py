@@ -185,5 +185,12 @@ CORPUS = [
         ('of', 'IGN'),
         ('sections', "UNK"),
         ('?', 'IGN')
-    ]
+    ],
+    [
+        ('Show', 'SELECT'),
+        ('me', "IGN"),
+        ('3', "LIMIT"),
+        ('sections', "UNK"),
+        ('.', 'IGN')
+    ],
 ]
