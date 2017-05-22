@@ -15,6 +15,8 @@ class AttributeNode(SQLNodeMultiChild):
     => names
 
     """
-    def __init__(self, label="*", child=None):
+    def __init__(self, label="*", child=None, parent=None):
         super(AttributeNode, self).__init__(SQLNodeType.ATTRIBUTE_NODE, label)
+
         self.add_child(child)
+        self.add_parent(parent)

@@ -4,10 +4,8 @@ class SQLNodeMultiChild(SQLNode):
     """
     This class enforces a list as a child. Children nodes are added to this list
     """
-    def __init__(self, node_type, label, child=None):
-        SQLNode.__init__(self, node_type, label)
-        if child is None:
-            self.child = []
+    def __init__(self, node_type, label, child=[], parent=None):
+        super(SQLNodeMultiChild, self).__init__(node_type, label, child, parent)
 
 
     def add_child(self, child):

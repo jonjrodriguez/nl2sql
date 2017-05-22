@@ -15,6 +15,8 @@ class ValueNode(SQLNode):
     =>
 
     """
-    def __init__(self, label="", child=None):
+    def __init__(self, label="", child=None, parent=None):
         super(ValueNode, self).__init__(SQLNodeType.VALUE_NODE, label)
+
         self.add_child(child)
+        self.add_parent(parent)

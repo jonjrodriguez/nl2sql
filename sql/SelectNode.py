@@ -18,9 +18,11 @@ class SelectNode(SQLNodeMultiChild):
     => SELECT * FROM 'students';
 
     """
-    def __init__(self, label="SELECT", child=None):
+    def __init__(self, label="SELECT", child=None, parent=None):
         super(SelectNode, self).__init__(SQLNodeType.SELECT_NODE, label)
+
         self.add_child(child)
+        self.add_parent(parent)
 
 
     def to_sql(self):

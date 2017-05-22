@@ -4,9 +4,12 @@ from sql import OperatorNodeType
 
 
 class OperatorNode(SQLNode):
-    def __init__(self, child=None, operator_type=OperatorNodeType.EQUAL):
+    def __init__(self, child=None, parent=None, operator_type=OperatorNodeType.EQUAL):
         super(OperatorNode, self).__init__(SQLNodeType.OPERATOR_NODE, "operator")
+
         self.add_child(child)
+        self.add_parent(parent)
+
         self.operator_type = operator_type
 
 
