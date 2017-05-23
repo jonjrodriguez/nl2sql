@@ -4,7 +4,10 @@ from sql.FunctionNodeType import FunctionNodeType
 from sql.SelectNode import SelectNode
 from sql.TableNode import TableNode
 from sql.ValueNode import ValueNode
+from sql.LimitNode import LimitNode
 from nltk.tree import ParentedTree
+from sql.OperatorNode import OperatorNode
+from sql.OperatorNodeType import OperatorNodeType
 
 class NodeGenerator(object):
     def __init__(self, communicator, threshold=0.6):
@@ -63,14 +66,14 @@ class NodeGenerator(object):
             return self.get_db_node(node_type, node_tag, token)
 
         if node_type == "grammar":
-            return self.get_grammar_node(node_type, node_tag)
+            return self.get_grammar_node(node_type, node_tag, token)
 
         # This is where the operator node will also be generated
         return None
 
 
     @staticmethod
-    def get_grammar_node(node_type, node_tag):
+    def get_grammar_node(node_type, node_tag, token):
         if not node_type == "grammar":
             return None
 
@@ -81,6 +84,20 @@ class NodeGenerator(object):
             return AttributeNode()
         elif tag == "COUNT":
             return FunctionNode(None, FunctionNodeType.COUNT)
+        elif tag == "LIMIT":
+            limit = 0
+            if token.lower() == "all":
+                limit = 1000 # Assuming this is all we want to return for 'All'
+            else:
+                if token.isdigit():
+                    limit = int(token)
+            return LimitNode(limit)
+        elif tag == "EQUAL":
+            return OperatorNode()
+        elif tag == "LESS_THAN":
+            return OperatorNode(OperatorNodeType.LESS_THAN)
+        elif tag == "GREATER_THAN":
+            return OperatorNode(OperatorNodeType.GREATER_THAN)
 
 
     def get_db_node(self, node_type, node_tag, token):
@@ -98,18 +115,13 @@ class NodeGenerator(object):
         term, score = node_tag[int(selected)]
 
         if node_type == "corpus":
-            attributes = term.split(".")
-            table = attributes[0]
-            value_node = ValueNode(term)
-            value_node.add_child(TableNode(table))
-            return value_node
+            attribute_node = AttributeNode(term)
+            attribute_node.add_child(ValueNode(token))
+            return attribute_node
+
 
         if node_type == "schema":
             if "." in term:
-                attributes = term.split(".")
-                table = attributes[0]
-                attribute_node = AttributeNode(term)
-                attribute_node.add_child(TableNode(table))
-                return attribute_node
+                return AttributeNode(term)
             else:
                 return TableNode(term)
