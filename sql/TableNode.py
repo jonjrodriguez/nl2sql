@@ -1,8 +1,8 @@
 from sql.SQLNodeType import SQLNodeType
-from sql.SQLNodeMultiChild import SQLNodeMultiChild
+from sql.SQLNode import SQLNode
 
 
-class TableNode(SQLNodeMultiChild):
+class TableNode(SQLNode):
     """
     Can have multiple children. Requires a label.
 

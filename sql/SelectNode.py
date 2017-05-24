@@ -1,7 +1,7 @@
-from sql.SQLNodeMultiChild import SQLNodeMultiChild
+from sql.SQLNode import SQLNode
 from sql.SQLNodeType import SQLNodeType
 
-class SelectNode(SQLNodeMultiChild):
+class SelectNode(SQLNode):
     """
     Usually the root node, this is a node of type select. Start with
     this node, and add children nodes to it (one at a time).
@@ -23,7 +23,3 @@ class SelectNode(SQLNodeMultiChild):
 
         self.add_child(child)
         self.add_parent(parent)
-
-
-    def to_sql(self):
-        return "SELECT"

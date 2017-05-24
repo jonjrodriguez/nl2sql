@@ -1,8 +1,8 @@
 from sql.SQLNodeType import SQLNodeType
-from sql.SQLNodeMultiChild import SQLNodeMultiChild
+from sql.SQLNode import SQLNode
 
 
-class AttributeNode(SQLNodeMultiChild):
+class AttributeNode(SQLNode):
     """
     Could have multiple children. Part of a larger tree.
 

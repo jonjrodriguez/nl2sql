@@ -53,10 +53,14 @@ class Seeder(object):
     def create_faculty(self):
         faculty = []
         for i in range(1, 20):
+            first_name = self.fake.first_name()
+            last_name = self.fake.last_name()
+
             faculty.append({
                 'id': i,
-                'first_name': self.fake.first_name(),
-                'last_name': self.fake.last_name(),
+                'first_name': first_name,
+                'last_name': last_name,
+                'name': "%s %s" % (first_name, last_name),
                 'is_adjunct': int(self.fake.boolean())
             })
 
@@ -121,6 +125,7 @@ class Seeder(object):
                 'id': i,
                 'first_name': first_name,
                 'last_name': last_name,
+                'name': "%s %s" % (first_name, last_name),
                 'university_id': 'N%d' % self.fake.random_number(digits=9, fix_len=True),
                 'net_id': net_id,
                 'active': int(self.fake.boolean()),

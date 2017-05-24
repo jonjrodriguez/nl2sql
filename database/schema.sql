@@ -23,6 +23,7 @@ CREATE TABLE `faculty` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(50) NOT NULL,
   `last_name` VARCHAR(50) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
   `is_adjunct` BOOL NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -64,6 +65,7 @@ CREATE TABLE `students` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(50) NOT NULL,
   `last_name` VARCHAR(50) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
   `university_id` VARCHAR(50) NOT NULL,
   `net_id` VARCHAR(50) NOT NULL,
   `active` BOOL NOT NULL DEFAULT 1,
