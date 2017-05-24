@@ -23,7 +23,3 @@ class LimitNode(SQLNode):
 
         self.add_child(child)
         self.add_parent(parent)
-
-
-    def to_sql(self):
-        return "LIMIT %s" % self.label

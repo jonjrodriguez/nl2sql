@@ -115,10 +115,7 @@ class NodeGenerator(object):
         term, score = node_tag[int(selected)]
 
         if node_type == "corpus":
-            attribute_node = AttributeNode(term)
-            attribute_node.add_child(ValueNode(token))
-            return attribute_node
-
+            return ValueNode(token, term)
 
         if node_type == "schema":
             if "." in term:
