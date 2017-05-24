@@ -4,7 +4,7 @@ Corpus for SQL Grammar
 CORPUS = [
     [
         ('Return', 'SELECT'),
-        ('all', "LIMIT"),
+        ('all', "IGN"),
         ('sections', "UNK"),
         ('.', 'IGN')
     ],
@@ -16,7 +16,7 @@ CORPUS = [
     ],
     [
         ('Find', 'SELECT'),
-        ('all', "LIMIT"),
+        ('all', "IGN"),
         ('sections', "UNK"),
         ('.', 'IGN')
     ],
@@ -163,7 +163,6 @@ CORPUS = [
     ],
     [
         ('Find', 'SELECT'),
-        ('a', 'IGN'),
         ('few', "LIMIT"),
         ('sections', "UNK"),
         ('.', 'IGN')

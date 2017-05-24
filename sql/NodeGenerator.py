@@ -85,13 +85,7 @@ class NodeGenerator(object):
         elif tag == "COUNT":
             return FunctionNode(None, FunctionNodeType.COUNT)
         elif tag == "LIMIT":
-            limit = 0
-            if token.lower() == "all":
-                limit = 1000 # Assuming this is all we want to return for 'All'
-            else:
-                if token.isdigit():
-                    limit = int(token)
-            return LimitNode(limit)
+            return LimitNode(token)
         elif tag == "EQUAL":
             return OperatorNode()
         elif tag == "LESS_THAN":
