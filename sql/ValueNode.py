@@ -18,7 +18,15 @@ class ValueNode(SQLNode):
 
     """
     def __init__(self, label, attribute, operator=OperatorNodeType.EQUAL, child=None, parent=None):
-        super(ValueNode, self).__init__(SQLNodeType.VALUE_NODE, label)
+        op = ""
+        if operator == OperatorNodeType.EQUAL:
+            op = "="
+        elif operator == OperatorNodeType.LESS_THAN:
+            op = "<"
+        elif operator == OperatorNodeType.GREATER_THAN:
+            op = ">"
+
+        super(ValueNode, self).__init__(SQLNodeType.VALUE_NODE, "%s %s '%s'" % (attribute, op, label), "where")
 
         self.add_child(child)
         self.add_parent(parent)

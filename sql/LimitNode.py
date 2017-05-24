@@ -13,7 +13,7 @@ class LimitNode(SQLNode):
     def __init__(self, label, child=None, parent=None):
         label = self.word_to_int(label)
 
-        super(LimitNode, self).__init__(SQLNodeType.LIMIT_NODE, label)
+        super(LimitNode, self).__init__(SQLNodeType.LIMIT_NODE, label, "limit")
 
         self.add_child(child)
         self.add_parent(parent)

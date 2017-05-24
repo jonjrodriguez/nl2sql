@@ -18,8 +18,8 @@ class SelectNode(SQLNode):
     => SELECT * FROM 'students';
 
     """
-    def __init__(self, label="SELECT", child=None, parent=None):
-        super(SelectNode, self).__init__(SQLNodeType.SELECT_NODE, label)
+    def __init__(self, label="*", child=None, parent=None):
+        super(SelectNode, self).__init__(SQLNodeType.SELECT_NODE, label, "select")
 
         self.add_child(child)
         self.add_parent(parent)

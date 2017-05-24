@@ -40,9 +40,6 @@ class NodeGenerator(object):
 
 
     def get_node_type(self, node):
-        if isinstance(node, ParentedTree):
-            return None
-
         # Node will be passed in as a Unicode type
         token = str(node)
 
@@ -80,8 +77,6 @@ class NodeGenerator(object):
         tag = str(node_tag)
         if tag == "SELECT":
             return SelectNode()
-        elif tag == "LIST":
-            return AttributeNode()
         elif tag == "COUNT":
             return FunctionNode(None, FunctionNodeType.COUNT)
         elif tag == "LIMIT":

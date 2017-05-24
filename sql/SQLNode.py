@@ -5,10 +5,11 @@ class SQLNode(object):
     The base SQL node, this doesn't have a type, this is inherited by all other
     classes. This doesnt assume anything on the child, could be one or many.
     """
-    def __init__(self, node_type, label, children=None, parent=None):
+    def __init__(self, node_type, label, sql_lbl, children=None, parent=None):
         self.type = node_type
         self.label = label
         self.parent = parent
+        self.sql_label = sql_lbl
 
         self.children = [] if children is None else children
 
