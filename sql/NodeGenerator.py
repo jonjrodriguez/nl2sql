@@ -104,7 +104,7 @@ class NodeGenerator(object):
 
         # For tags that come back with a very low score, this will be used
         # To interact with the user to confirm what the query is referring to
-        selected = 0 if score > self.threshold else self.communicator.choose(token, node_tag)
+        selected = 0 if score == 1.0 else self.communicator.choose(token, node_tag)
 
         term, score = node_tag[int(selected)]
 
