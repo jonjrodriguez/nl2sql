@@ -2,7 +2,7 @@ from Config import Config
 from communicate import Communicator
 from database import SchemaGraph
 from nlp import DBCorpusClassifier, DBSchemaClassifier, SQLGrammarClassifier, Parser, Tokenizer
-from sql import NodeGenerator, SQLGenerator
+from sql import NodeGenerator, SQLGenerator, SQLExecutor
 
 class Runner(object):
     """
@@ -25,9 +25,8 @@ class Runner(object):
         schema_classifier = DBSchemaClassifier(self.schema_graph)
 
         self.pipeline = [parser, grammar_classifier, schema_classifier, corpus_classifier]
-
         self.node_generator = NodeGenerator(self.communicator)
-        
+
 
     def start(self):
         self.communicator.say("Type 'exit' to quit")
@@ -50,12 +49,14 @@ class Runner(object):
 
             tree = self.node_generator(doc)
 
-            print tree
-            print
+            # print tree
+            # print
             tree.pretty_print()
             sql_generator = SQLGenerator(tree, self.schema_graph)
+            sql = sql_generator.getSQL()
 
-            print sql_generator.getSQL()
+            sql_executor = SQLExecutor(sql, self.communicator)
+            sql_executor.execute()
 
             self.communicator.resume()
 
