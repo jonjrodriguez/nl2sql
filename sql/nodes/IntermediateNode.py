@@ -4,7 +4,7 @@ from sql.nodes.SQLNode import SQLNode
 
 class IntermediateNode(SQLNode):
     def __init__(self, label, choices, child=None, parent=None):
-        super(IntermediateNode, self).__init__(SQLNodeType.INTERMEDIATE_NODE, label)
+        super(IntermediateNode, self).__init__(SQLNodeType.INTERMEDIATE_NODE, label, 'intermediate')
 
         self.choices = choices
         self.add_child(child)

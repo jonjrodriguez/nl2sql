@@ -27,7 +27,7 @@ class Runner(object):
         self.pipeline = [parser, grammar_classifier, schema_classifier, corpus_classifier]
 
         self.node_generator = NodeGenerator(self.communicator)
-        
+
 
     def start(self):
         self.communicator.say("Type 'exit' to quit")
@@ -53,9 +53,9 @@ class Runner(object):
             print tree
             print
             tree.pretty_print()
-            sql_generator = SQLGenerator(tree, self.schema_graph)
 
-            print sql_generator.getSQL()
+            sql_generator = SQLGenerator(tree, self.schema_graph)
+            print sql_generator.get_sql()
 
             self.communicator.resume()
 
