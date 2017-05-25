@@ -1,6 +1,6 @@
-from sql.SQLNode import SQLNode
-from sql.SQLNodeType import SQLNodeType
-from sql.OperatorNodeType import OperatorNodeType
+from sql.nodes.SQLNode import SQLNode
+from sql.nodes.SQLNodeType import SQLNodeType
+from sql.nodes.OperatorNodeType import OperatorNodeType
 
 
 class ValueNode(SQLNode):

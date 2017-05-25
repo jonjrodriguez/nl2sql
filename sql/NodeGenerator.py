@@ -1,11 +1,11 @@
-from sql.AttributeNode import AttributeNode
-from sql.FunctionNode import FunctionNode
-from sql.FunctionNodeType import FunctionNodeType
-from sql.SelectNode import SelectNode
-from sql.TableNode import TableNode
-from sql.ValueNode import ValueNode
-from sql.LimitNode import LimitNode
-from sql.IntermediateNode import IntermediateNode
+from sql.nodes.AttributeNode import AttributeNode
+from sql.nodes.FunctionNode import FunctionNode
+from sql.nodes.FunctionNodeType import FunctionNodeType
+from sql.nodes.SelectNode import SelectNode
+from sql.nodes.TableNode import TableNode
+from sql.nodes.ValueNode import ValueNode
+from sql.nodes.LimitNode import LimitNode
+from sql.nodes.IntermediateNode import IntermediateNode
 
 
 class NodeGenerator(object):

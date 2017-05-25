@@ -1,4 +1,4 @@
-from sql.SQLNodeType import SQLNodeType
+from sql.nodes.SQLNodeType import SQLNodeType
 
 
 class SQLTree(object):
