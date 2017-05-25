@@ -38,15 +38,21 @@ class SQLExecutor(object):
             separator = '+'
 
             results = cursor.fetchall()
-
-
-            sizetable = [map(len, row) for row in results]
+            sizetable = [map(len, map(str, row)) for row in results]
             widths = map(max, zip(*sizetable))
 
             for cd in cursor.description:
                 columns.append(cd[0])
 
-            for w in widths:
+            columns_widths = []
+            for cols_ls in columns:
+                columns_widths.append(len(cols_ls))
+
+            new_widths = []
+            for i in range(0, len(widths)):
+                new_widths.append(widths[i] + columns_widths[i])
+
+            for w in new_widths:
                 tavnit += " %-" + "%ss |" % (w,)
                 separator += '-' * w + '--+'
 
