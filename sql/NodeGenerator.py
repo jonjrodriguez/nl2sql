@@ -6,6 +6,7 @@ from sql.nodes.TableNode import TableNode
 from sql.nodes.ValueNode import ValueNode
 from sql.nodes.LimitNode import LimitNode
 from sql.nodes.IntermediateNode import IntermediateNode
+from sql.NodeSelector import NodeSelector
 
 
 class NodeGenerator(object):
@@ -15,12 +16,21 @@ class NodeGenerator(object):
         self.tagged = {}
         self.parse = None
 
+        selector = NodeSelector(communicator)
+
+        self.pipeline = [selector]
+
 
     def __call__(self, doc):
         self.tagged = doc['tagged']
         self.parse = doc['dep_parse']
 
-        return self.generate_tree(self.parse.root)
+        tree = self.generate_tree(self.parse.root)
+
+        for process in self.pipeline:
+            process(tree)
+
+        return tree
 
 
     def generate_tree(self, node):
@@ -91,7 +101,7 @@ class NodeGenerator(object):
         tag, score = tags[0]
 
         if score < 1.0:
-            return IntermediateNode('schema', tags)
+            return IntermediateNode('schema', token, tags)
 
         if "." in tag:
             return AttributeNode(tag)
@@ -107,6 +117,6 @@ class NodeGenerator(object):
         tag, score = tags[0]
 
         if score < 1.0:
-            return IntermediateNode('corpus', tags)
+            return IntermediateNode('corpus', token, tags)
 
         return ValueNode(token, tag)
