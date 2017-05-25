@@ -1,4 +1,5 @@
 import itertools
+from sql.nodes.SelectNode import SelectNode
 from sql.nodes.AttributeNode import AttributeNode
 from sql.nodes.ValueNode import ValueNode
 
@@ -25,7 +26,7 @@ class SQLGenerator(object):
             self.add_to_node_dict("tables", table)
             self.add_to_node_dict(node.sql_label, "%s %s '%s'" % (node.attribute, node.operator,
                                                                   node.label))
-        else:
+        elif not isinstance(node, SelectNode):
             self.add_to_node_dict(node.sql_label, node.label)
 
         for child in node.children:
