@@ -4,7 +4,7 @@ from sql.SQLNodeType import SQLNodeType
 
 class FunctionNode(SQLNode):
     def __init__(self, child=None, func_type=None, parent=None):
-        super(FunctionNode, self).__init__(SQLNodeType.FUNCTION_NODE, "function")
+        super(FunctionNode, self).__init__(SQLNodeType.FUNCTION_NODE, "COUNT(*)", "select")
 
         self.add_child(child)
         self.add_parent(parent)

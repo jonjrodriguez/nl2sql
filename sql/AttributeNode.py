@@ -16,7 +16,7 @@ class AttributeNode(SQLNode):
 
     """
     def __init__(self, label="*", child=None, parent=None):
-        super(AttributeNode, self).__init__(SQLNodeType.ATTRIBUTE_NODE, label)
+        super(AttributeNode, self).__init__(SQLNodeType.ATTRIBUTE_NODE, label, "select")
 
         self.add_child(child)
         self.add_parent(parent)

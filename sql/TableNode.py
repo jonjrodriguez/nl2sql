@@ -12,7 +12,7 @@ class TableNode(SQLNode):
 
     """
     def __init__(self, label, child=None, parent=None):
-        super(TableNode, self).__init__(SQLNodeType.TABLE_NODE, label)
+        super(TableNode, self).__init__(SQLNodeType.TABLE_NODE, label, "tables")
 
         self.add_child(child)
         self.add_parent(parent)

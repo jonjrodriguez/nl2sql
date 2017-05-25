@@ -18,7 +18,7 @@ class ValueNode(SQLNode):
 
     """
     def __init__(self, label, attribute, operator=OperatorNodeType.EQUAL, child=None, parent=None):
-        super(ValueNode, self).__init__(SQLNodeType.VALUE_NODE, label)
+        super(ValueNode, self).__init__(SQLNodeType.VALUE_NODE, label, "where")
 
         self.add_child(child)
         self.add_parent(parent)
