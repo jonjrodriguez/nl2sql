@@ -5,12 +5,12 @@ from sql.SelectNode import SelectNode
 from sql.TableNode import TableNode
 from sql.ValueNode import ValueNode
 from sql.LimitNode import LimitNode
+from sql.IntermediateNode import IntermediateNode
 
 
 class NodeGenerator(object):
-    def __init__(self, communicator, threshold=0.6):
+    def __init__(self, communicator):
         self.communicator = communicator
-        self.threshold = threshold
 
         self.tagged = {}
         self.parse = None
@@ -90,11 +90,8 @@ class NodeGenerator(object):
         # We can safely make the assumption that the Node Tag will be a list
         tag, score = tags[0]
 
-        # For tags that come back with a very low score, this will be used
-        # To interact with the user to confirm what the query is referring to
-        selected = 0 if score == 1.0 else self.communicator.choose(token, tags)
-
-        tag, score = tags[int(selected)]
+        if score < 1.0:
+            return IntermediateNode('schema', tags)
 
         if "." in tag:
             return AttributeNode(tag)
@@ -109,10 +106,7 @@ class NodeGenerator(object):
         # We can safely make the assumption that the Node Tag will be a list
         tag, score = tags[0]
 
-        # For tags that come back with a very low score, this will be used
-        # To interact with the user to confirm what the query is referring to
-        selected = 0 if score == 1.0 else self.communicator.choose(token, tags)
-
-        tag, score = tags[int(selected)]
+        if score < 1.0:
+            return IntermediateNode('corpus', tags)
 
         return ValueNode(token, tag)
