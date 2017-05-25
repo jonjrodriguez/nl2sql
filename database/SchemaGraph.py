@@ -24,6 +24,16 @@ class SchemaGraph(object):
         if node.label not in self.graph_dict:
             self.graph_dict[node.label] = node
 
+    def get_direct_path(self, table_name_a, table_name_b):
+        queue = [(table_name_a, [])]
+        while queue:
+            (vertex, path) = queue.pop(0)
+            node = self.get_node(vertex)
+            for next in node.relations:
+                if next[0] == table_name_b:
+                    return path + [next]
+                else:
+                    queue.append((next[0], path + [next]))
 
     def construct(self, database, file_path):
         for (table_name,) in database.get_tables():

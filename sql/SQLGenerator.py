@@ -1,13 +1,14 @@
-import pprint
+import itertools
 from sql.SelectNode import SelectNode
 from sql.AttributeNode import AttributeNode
 from sql.ValueNode import ValueNode
 
 
 class SQLGenerator(object):
-    def __init__(self, tree):
+    def __init__(self, tree, schema_graph):
         self.node_dict = {}
         self.generateNodeDict(tree)
+        self.schema_graph = schema_graph
 
 
     def generateNodeDict(self, node):
@@ -19,7 +20,6 @@ class SQLGenerator(object):
         elif type(node) == list:
             for nd in node:
                 self.generateNodeDict(nd)
-                #self.addToNodeDict(nd.sql_label, nd.label)
         elif type(node) == AttributeNode:
             values = node.label.split(".")
             if values:
@@ -29,14 +29,10 @@ class SQLGenerator(object):
                 self.generateNodeDict(node.children)
         elif type(node) == ValueNode:
             values = node.attribute.split(".")
-            if values:
-                table = values[0]
-                self.addToNodeDict("tables", table)
-                self.addToNodeDict(node.sql_label, node.label)
-                self.generateNodeDict(node.children)
-            else:
-                self.addToNodeDict(node.sql_label, node.label)
-                self.generateNodeDict(node.children)
+            table = values[0]
+            self.addToNodeDict("tables", table)
+            self.addToNodeDict(node.sql_label, "%s %s '%s'" % (node.attribute, node.operator, node.label))
+            self.generateNodeDict(node.children)
         else:
             self.addToNodeDict(node.sql_label, node.label)
             self.generateNodeDict(node.children)
@@ -50,11 +46,16 @@ class SQLGenerator(object):
 
 
     def getSQL(self):
-        _select = ""
+        _select = "*"
         _from = ""
         _where = ""
         _limit = ""
         sql = ""
+
+        if not self.node_dict['tables']:
+            raise ValueError, "At least one table must be specified"
+
+        self.getTableMappings(self.node_dict['tables'])
 
         for keyword, values in self.node_dict.iteritems():
             if keyword == "select":
@@ -62,15 +63,9 @@ class SQLGenerator(object):
             elif keyword == "tables":
                 _from  = ", ".join(values)
             elif keyword == "where":
-                _where = ", ".join(values)
+                _where = " and ".join(values)
             elif keyword == "limit":
-                _limit = ", ".join(values)
-
-        if not _select:
-            raise ValueError, "A Select Node is required"
-
-        if not _from:
-            raise ValueError, "At least one table must be specified"
+                _limit = max(values)
 
         sql = "SELECT %s" % _select
         sql += " FROM %s" % _from
@@ -81,4 +76,20 @@ class SQLGenerator(object):
         if _limit:
             sql += " LIMIT %s" % _limit
 
+
         return sql
+
+    def getTableMappings(self, tables):
+        if not self.schema_graph:
+            raise Exception, "No Schema Graph was found"
+
+        for table_a, table_b in itertools.combinations(tables, 2):
+            relations = self.schema_graph.get_direct_path(table_a, table_b)
+            
+            for relation in relations:
+                current_table_id = relation[1]
+                next_table_id = relation[2]
+                join_table = relation[0]
+                self.addToNodeDict("tables", join_table)
+                self.addToNodeDict("where", "%s.%s = %s.%s" % (table_a, current_table_id, join_table, next_table_id))
+                table_a = relation[0]

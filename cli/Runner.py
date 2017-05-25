@@ -15,14 +15,14 @@ class Runner(object):
         models = dict(config.items("MODELS"))
 
         self.communicator = Communicator()
-        schema_graph = SchemaGraph(db_settings['graph_path'])
+        self.schema_graph = SchemaGraph(db_settings['graph_path'])
 
         self.tokenizer = Tokenizer(paths['stanford_jar'])
 
         parser = Parser(paths['stanford_jar'], paths['stanford_models_jar'])
         grammar_classifier = SQLGrammarClassifier(models['sql_model'])
         corpus_classifier = DBCorpusClassifier(models['db_model'])
-        schema_classifier = DBSchemaClassifier(schema_graph)
+        schema_classifier = DBSchemaClassifier(self.schema_graph)
 
         self.pipeline = [parser, grammar_classifier, schema_classifier, corpus_classifier]
 
@@ -53,7 +53,7 @@ class Runner(object):
             print tree
             print
             tree.pretty_print()
-            sql_generator = SQLGenerator(tree)
+            sql_generator = SQLGenerator(tree, self.schema_graph)
 
             print sql_generator.getSQL()
 
