@@ -11,4 +11,3 @@ from sql.SQLTree import SQLTree
 from sql.TableNode import TableNode
 from sql.ValueNode import ValueNode
 from sql.SQLGenerator import SQLGenerator
-from sql.SQLExecutor import SQLExecutor

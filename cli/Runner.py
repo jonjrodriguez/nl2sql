@@ -1,8 +1,8 @@
 from Config import Config
 from communicate import Communicator
-from database import SchemaGraph
+from database import SchemaGraph, Database
 from nlp import DBCorpusClassifier, DBSchemaClassifier, SQLGrammarClassifier, Parser, Tokenizer
-from sql import NodeGenerator, SQLGenerator, SQLExecutor
+from sql import NodeGenerator, SQLGenerator
 
 class Runner(object):
     """
@@ -49,13 +49,9 @@ class Runner(object):
 
             tree = self.node_generator(doc)
 
-            print tree
-            print
-
-            tree.pretty_print()
             sql_generator = SQLGenerator(tree, self.schema_graph)
-            sql_executor = SQLExecutor(sql_generator.getSQL(), self.communicator)
-            sql_executor.execute()
+            db = Database()
+            db.execute(sql_generator.getSQL(), True)
 
             self.communicator.resume()
 

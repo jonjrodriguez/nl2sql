@@ -18,6 +18,19 @@ class Config(object):
         self.config.set(section, option, value)
 
 
+    def remove_option(self, section, option, value):
+        if self.config.has_section(section):
+            self.config.remove_option(section)
+
+        if len(self.items(section)) == 0:
+            self.remove_section(section)
+
+
+    def remove_section(self, section):
+        if self.config.has_section(section):
+            self.config.remove_section(section)
+
+
     def get(self, section, option, raw=False):
         return self.config.get(section, option, raw)
 

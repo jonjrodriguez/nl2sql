@@ -20,7 +20,9 @@ class Setup(object):
         self.comm.say("Downloading WordNet corpora.")
         nltk.download("wordnet")
 
-        self.setup_db(force)
+        if force and self.comm.confirm("Do you want to force a db setup?"):
+            self.setup_db(force)
+
         self.create_db_graph(force)
         self.create_db_corpus(force)
         self.train_db_classifier(force)
@@ -37,23 +39,36 @@ class Setup(object):
 
         self.comm.say("Configuring Database:")
 
-        hostname = self.comm.ask("Enter hostname")
-        username = self.comm.ask("Enter MySQL user")
-        password = self.comm.ask("Enter MySQL password")
-        db_name = self.comm.ask("Enter database name")
+        if self.comm.confirm("Do you want to override the current database configuration?"):
+            self.config.set("DATABASE", "hostname", self.comm.ask("Enter hostname"))
+            self.config.set("DATABASE", "username", self.comm.ask("Enter MySQL user"))
+            self.config.set("DATABASE", "password", self.comm.ask("Enter MySQL password"))
+            db = self.comm.ask("Enter database name")
+            self.config.set("DATABASE", "database", db)
+            self.config.write()
+        else:
+            if not self.config.has("DATABASE"):
+                self.config.set("DATABASE", "hostname", self.comm.ask("Enter hostname"))
+                self.config.set("DATABASE", "username", self.comm.ask("Enter MySQL user"))
+                self.config.set("DATABASE", "password", self.comm.ask("Enter MySQL password"))
+                db = self.comm.ask("Enter database name")
+                self.config.set("DATABASE", "database", db)
+                self.config.write()
+            else:
+                db = self.config.get("DATABASE", "database")
 
         try:
-            database = Database(hostname, username, password)
+            database = Database()
         except ValueError as exception:
             self.comm.error("Error: %s" % exception)
 
         db_exists = False
         try:
-            database.set_db(db_name)
+            database.set_db(db)
             db_exists = True
         except ValueError as exception:
             if self.comm.confirm("Database does not exist. Create it?"):
-                database.create_db(db_name)
+                database.create_db(db)
                 db_exists = True
 
         if db_exists:
@@ -62,11 +77,6 @@ class Setup(object):
 
             if self.comm.confirm("Do you want to seed the database?"):
                 database.seed()
-
-        self.config.set("DATABASE", "hostname", hostname)
-        self.config.set("DATABASE", "username", username)
-        self.config.set("DATABASE", "password", password)
-        self.config.set("DATABASE", "database", db_name)
 
         self.comm.say("Database configured.")
 
@@ -78,13 +88,8 @@ class Setup(object):
 
         self.comm.say("Constructing Database Graph.")
 
-        hostname = self.config.get("DATABASE", "hostname")
-        username = self.config.get("DATABASE", "username")
-        password = self.config.get("DATABASE", "password")
-        db_name = self.config.get("DATABASE", "database")
-
         try:
-            database = Database(hostname, username, password, db_name)
+            database = Database()
         except ValueError as exception:
             self.comm.error("Error: %s" % exception)
 
@@ -104,13 +109,8 @@ class Setup(object):
 
         self.comm.say("Creating Database Corpus.")
 
-        hostname = self.config.get("DATABASE", "hostname")
-        username = self.config.get("DATABASE", "username")
-        password = self.config.get("DATABASE", "password")
-        db_name = self.config.get("DATABASE", "database")
-
         try:
-            database = Database(hostname, username, password, db_name)
+            database = Database()
         except ValueError as exception:
             self.comm.error("Error: %s" % exception)
 
