@@ -74,6 +74,8 @@ class NodeSelector(object):
             return tree
 
         for child in tree.children:
-            return self.find_first_choice(child)
+            intermediate = self.find_first_choice(child)
+            if intermediate:
+                return intermediate
 
         return None
