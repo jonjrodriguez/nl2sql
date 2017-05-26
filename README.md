@@ -9,15 +9,75 @@ NL2SQL seeks to transform natural language questions to SQL, allowing individual
 * [Requests](http://docs.python-requests.org/)
 * [MySQLdb](http://mysqldb.readthedocs.io)
 * [Faker](https://faker.readthedocs.io)
+* [NumPy](http://www.numpy.org/)
 
-### Setup
+## Quickstart
+```sh
+$ pip install -r requirements.txt
+$ python nl2sql.py download
+$ python nl2sql.py setup
+$ python nl2sql.py run
+```
 
-To install Dependencies (may take a while):
+Enter sentences to be turned into SQL:
+
+```sh
+$ python nl2sql.py run
+
+  Type 'exit' to quit
+
+  How can I help you?
+
+  >: Find several students registered for Constitutional Law
+```
+
+```sh
+usage: python nl2sql.py {download,setup,run} ...
+
+Command-line interface for NL2SQL
+
+subcommands:
+  {download,setup,run}
+    download            Download the Stanford CoreNLP tools and related
+                        models. Install the needed project dependencies.
+    setup               Setup the project as needed.
+    run                 Start NL2SQL to parse questions
+```
+
+### Download
+
+To download Dependencies (may take a while):
 ```sh
 $ pip install -r requirements.txt
 $ python nl2sql.py download
 ```
 
+Example run:
+```sh
+$ python nl2sql.py download
+
+  Downloading stanford-corenlp-full-2016-10-31.zip from http://nlp.stanford.edu/software/stanford-corenlp-full-2016-10-31.zip
+
+  [==================================================]
+   
+  Extracting stanford-corenlp-full-2016-10-31.zip to /Users/.../nl2sql/data
+
+  Extracting stanford-corenlp-3.7.0-models.jar to /Users/.../nl2sql/data/stanford-corenlp-full-2016-10-31/stanford-corenlp-3.7.0-models
+```
+
+```sh
+usage: python nl2sql.py download [-p PATH] [-f]
+
+    Download the Stanford CoreNLP tools and related models.
+    Install the needed project dependencies.
+
+optional arguments:
+  -p PATH, --path PATH  Path to download models and jar files (default:
+                        ./data)
+  -f, --force           Force download of all files
+```
+
+### Setup
 To setup, first have a MySQL database ready and running, then run:
 ```sh
 $ python nl2sql.py setup
@@ -26,6 +86,8 @@ $ python nl2sql.py setup
 Which will prompt you to enter a database information, then prompt you to
 import the schema and seed the database.
 
+Next, it will generate the `SchemaGraph` and `DBCorpus` and train all Classifiers and store them via pickle for later use.
+
 Example run:
 
 ```sh
@@ -33,6 +95,10 @@ $ python nl2sql.py setup
 
   Setting up NL2SQL.
 
+  Downloading WordNet corpora.
+
+  [nltk_data] Downloading package wordnet to /...
+  [nltk_data]   Package wordnet is already up-to-date!
 
   Configuring Database:
 
@@ -40,52 +106,86 @@ $ python nl2sql.py setup
   Enter MySQL user: ROOT
   Enter MySQL password:
   Enter database name: DATABASE_NAME
+  Database does not exist. Create it? [y/n]: y
   Do you want to import the database schema? [y/n]: y
   Do you want to seed the database? [y/n]: y
 
   Database configured.
 
+  Constructing Database Graph.
+  
+  Database Graph constructed.
+  
+  Creating Database Corpus.
+
+  Database Corpus created.
+
+  Training database classifier.
+
+  ==> Training (20 iterations)
+
+      Iteration    Log Likelihood    Accuracy
+      ---------------------------------------
+             1          -2.70805        0.010
+             2          -0.78485        0.974
+             ...
+            19          -0.10204        1.000
+         Final          -0.09748        1.000
+
+  Database classifier trained.
+
+  Training SQL grammar classifier.
+
+  SQL grammar classifier trained.
 
   Set up complete.
 
 ```
 
-## NL2SQL Pipeline
+```sh
+usage: python nl2sql.py setup [-f]
 
-To convert natural language to SQL, we will attempt to split up the task into at least three parts. Each one depending on the ones before it. The pipeline will attempt to extract at least one SQL statement out of the given text. It is possible that there may be no SQL statement.
+    Setup the project as needed.
 
-### Question Classification
+optional arguments:
+  -f, --force  Force setup to rerun
+```
 
-The first step in creating the NL2SQL interface is to break down the question into subcategories of questions. Doing so would help us define what kind of answer the user is looking for, thus helping us generate SQL. To start, we divided most questions into some categories.
+### Run
 
-  1. __Yes/No__: These questions generally have a yes/no value as an answer, so the SQL result can expect to be cast as boolean.
-  2. __Who__: 'Who' questions probably expect a `PERSON` or a `CORPORATION`.
-  3. __What__: 'What' questions probably expect an entity, but probably not a `PERSON`.
-  4. __When__: 'When' questions will let us know we're probably looking for a `datetime` or similar data value.
-  5. __Num__: These questions will probably want a `COUNT`, `AVG`, `SUM` or something of that nature as the SQL return value.
+To start the system, run the two previous commands, then run:
+```sh
+$ python nl2sql.py setup
+```
 
-#### Inputs
-As an input, the Classifier takes in a full english statement
+You will be prompted to enter a statement which will be turned into SQL and executed.
 
-#### Outputs
-As output, the classifier will return one of the above mentioned categories.
+Example Run:
+```sh
+$ python nl2sql.py run
 
-### Parsing
+  Type 'exit' to quit
 
-Parsing the statement is the next step of the pipeline. If we have the question classified, we can parse the sentence using a parsing library to try and discover the `SUBJECT` or `SUBJECTS` of the question. This could be useful to identify the tables we will try and explore. We can also parse out `DIRECT OBJECT(S)`, in an effort to see what columns we can select. With a collection of both, we can construct a list of possible `FROM` candidates, and a list of possible `SELECT` candidates.
+  How can I help you?
 
-#### Inputs
-As an input, the parser will accept a full english statement, with the category defined by the classifier.
+  >: How many sections are located in Rhode Island in Spring 2017?
 
-#### Outputs
-As output, the parser will return two lists, one of possible `FROM` candidates (table names), and one of possible `SELECT` candidates (fields on tables)
+  +------------+
+  | COUNT(*)   |
+  +------------+
+  | 15         |
+  +------------+
 
-### Lookup/Validation
+   What else would you like to know?
 
-The final stage of the pipeline is the validator. The validator must try to match the candidate tables and columns to the proper table and column names in the DB. Using word similarity and synonym matching, the validator must have a high condfidence level to match the table names and field names. Because the inputs are for multiple possible table names and column names, the validator will attempt to see what combination matches best. To do so, it will have to learn common synonyms and abbrevations for table/column names. For example, the word `ids` should match the column name `ID`, and the word `sect` would likely match the table name `Sections`.
+   >:
+```
 
-#### Inputs
-Two lists, one of possible `FROM` candidates (table names), and one of possible `SELECT` candidates (fields on tables).
+```sh
+usage: python nl2sql.py run [-d]
 
-#### Outputs
-A list of `<SELECT,FROM>` tuples, and their confidence levels.
+    Start NL2SQL to parse questions
+
+optional arguments:
+  -d, --debug  Print out debug statements
+```
