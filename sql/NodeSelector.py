@@ -18,13 +18,16 @@ class NodeSelector(object):
 
     def create_choices(self, node):
         label = None
-        choices = []
 
         if node.type == 'schema':
             for child in node.children:
                 if isinstance(child, TableNode):
                     label = child.label
                     break
+
+        if node.type == 'corpus':
+            if isinstance(node.parent, ValueNode):
+                label = node.parent.attribute.split(".")[0]
 
         choices = [choice[0] for choice in node.choices]
         if label:
