@@ -7,6 +7,7 @@ from sql.nodes.ValueNode import ValueNode
 from sql.nodes.LimitNode import LimitNode
 from sql.nodes.IntermediateNode import IntermediateNode
 from sql.NodeSelector import NodeSelector
+from sql.NodeReducer import NodeReducer
 
 
 class NodeGenerator(object):
@@ -17,8 +18,9 @@ class NodeGenerator(object):
         self.parse = None
 
         selector = NodeSelector(communicator)
+        reducer = NodeReducer()
 
-        self.pipeline = [selector]
+        self.pipeline = [selector, reducer]
 
 
     def __call__(self, doc):

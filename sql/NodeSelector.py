@@ -30,10 +30,12 @@ class NodeSelector(object):
                 label = node.parent.attribute.split(".")[0]
 
         choices = [choice[0] for choice in node.choices]
-        if label:
-            choices = [choice for choice in choices if label in choice]
+        filtered_choices = []
 
-        return choices
+        if label:
+            filtered_choices = [choice for choice in choices if label in choice]
+
+        return filtered_choices or choices
 
 
     def update_tree(self, node, choice):
@@ -60,7 +62,8 @@ class NodeSelector(object):
         for child in children:
             child.parent = new_node
 
-        parent.children = [new_node if child == node else child for child in parent.children]
+        if parent:
+            parent.children = [new_node if child == node else child for child in parent.children]
 
 
     def intermediate_nodes(self, tree):

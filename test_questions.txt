@@ -25,3 +25,9 @@ What is the total number of students registered for LAW-LW.11275 in the fall ?
 What is the average number of students that register for LAW-LW.11275 ?
 How many students are taking Constitutional Law in the Spring of 2016?
 How many students are taking Constitutional Law in Spring 2016?
+How many sections named Tax Law?
+What faculty teach Constitutional Law?
+How many students named Jonathan Rodriguez?
+How many sections in North Carolina?
+How many students taking courses in North Carolina?
+How many students taking courses in North Carolina during Spring 2017?
