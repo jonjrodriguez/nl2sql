@@ -5,8 +5,6 @@ from sql.SelectNode import SelectNode
 from sql.TableNode import TableNode
 from sql.ValueNode import ValueNode
 from sql.LimitNode import LimitNode
-from nltk.tree import ParentedTree
-from sql.OperatorNode import OperatorNode
 from sql.OperatorNodeType import OperatorNodeType
 
 class NodeGenerator(object):
