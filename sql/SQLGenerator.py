@@ -77,7 +77,7 @@ class SQLGenerator(object):
             sql += " LIMIT %s" % _limit
 
 
-        return sql
+        return sql + ";"
 
     def getTableMappings(self, tables):
         if not self.schema_graph:

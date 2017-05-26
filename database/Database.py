@@ -3,14 +3,39 @@ from warnings import filterwarnings, resetwarnings
 import MySQLdb
 from _mysql_exceptions import OperationalError
 from database.Seeder import Seeder
+from Config import Config
 
 class Database(object):
     """
     Communicates with a MySQL database
     """
-    def __init__(self, host, user, passwd, db_name=''):
+    def __init__(self, use_db_name=True):
+        config = Config()
+        db_settings = dict(config.items("DATABASE"))
+
+        if db_settings:
+            if not db_settings:
+                raise ValueError('No database settings were found. Run setup to continue')
+
+            if use_db_name:
+                config = {
+                    'host': db_settings["hostname"],
+                    'user': db_settings["username"],
+                    'passwd': db_settings["password"],
+                    'db': db_settings["database"]
+                }
+            else:
+                config = {
+                    'host': db_settings["hostname"],
+                    'user': db_settings["username"],
+                    'passwd': db_settings["password"]
+                }
+
+        else:
+            raise ValueError ("No database has been setup. Please run setup and try again.")
+
         try:
-            self.database = MySQLdb.connect(host, user, passwd, db_name)
+            self.database = MySQLdb.connect(**config)
         except OperationalError as (_, error):
             raise ValueError('Incorrect settings given for the database. %s' % error)
 
@@ -18,6 +43,7 @@ class Database(object):
     def set_db(self, db_name):
         try:
             self.database.select_db(db_name)
+            self.database.commit()
         except OperationalError as (_, error):
             raise ValueError('Incorrect name given for the database. %s' % error)
 
@@ -90,11 +116,58 @@ class Database(object):
         self.database.commit()
 
 
-    def execute(self, statement):
+    def execute(self, statement, show=False):
         cursor = self.database.cursor()
         cursor.execute(statement)
+
+        if show:
+            columns = []
+            tavnit = '|'
+            separator = '+'
+
+            results = cursor.fetchall()
+            sizetable = [map(len, map(str, row)) for row in results]
+            widths = map(max, zip(*sizetable))
+
+            for cd in cursor.description:
+                columns.append(cd[0])
+
+            columns_widths = []
+            for cols_ls in columns:
+                columns_widths.append(len(cols_ls))
+
+            new_widths = []
+            for i in range(0, len(widths)):
+                new_widths.append(widths[i] + columns_widths[i])
+
+            for w in new_widths:
+                tavnit += " %-" + "%ss |" % (w,)
+                separator += '-' * w + '--+'
+
+            print(separator)
+            print(tavnit % tuple(columns))
+            print(separator)
+            for row in results:
+                print(tavnit % row)
+            print(separator)
+
         return cursor
 
     def executemany(self, statement, values):
         cursor = self.database.cursor()
         cursor.executemany(statement, values)
+
+    def does_db_exist(self, db_name):
+        try:
+            results = self.execute("SHOW DATABASES;")
+            for result in results:
+                print result
+
+            if results:
+                return True
+            else:
+                return False
+        except MySQLdb.Error:
+            print "ERROR IN CONNECTION"
+
+        return False
