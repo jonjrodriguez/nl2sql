@@ -22,6 +22,9 @@ def shape(word):
 
 
 def wup_sim(word1, word2):
+    if word2 == "id":
+        return 0
+
     synset1 = wordnet.synsets(word1)
     synset2 = wordnet.synsets(word2)
 

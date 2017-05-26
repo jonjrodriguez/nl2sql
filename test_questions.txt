@@ -31,3 +31,4 @@ How many students named Jonathan Rodriguez?
 How many sections in North Carolina?
 How many students taking courses in North Carolina?
 How many students taking courses in North Carolina during Spring 2017?
+Find section names and section_numbers for sections located in Utah

@@ -36,12 +36,10 @@ class Setup(object):
         if not force and self.config.has("DATABASE"):
             self.comm.say("Database already configured.")
             return
-        else:
-            self.comm.confirm("Do you want to force a db setup?")
 
         self.comm.say("Configuring Database:")
 
-        if self.comm.confirm("Do you want to override the current database configuration?"):
+        if force and self.comm.confirm("Do you want to override the current database configuration?"):
             self.config.set("DATABASE", "hostname", self.comm.ask("Enter hostname"))
             self.config.set("DATABASE", "username", self.comm.ask("Enter MySQL user"))
             self.config.set("DATABASE", "password", self.comm.ask("Enter MySQL password"))

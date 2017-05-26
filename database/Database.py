@@ -13,26 +13,14 @@ class Database(object):
         config = Config()
         db_settings = dict(config.items("DATABASE"))
 
-        if db_settings:
-            if not db_settings:
-                raise ValueError('No database settings were found. Run setup to continue')
+        config = {
+            'host': db_settings["hostname"],
+            'user': db_settings["username"],
+            'passwd': db_settings["password"]
+        }
 
-            if use_db_name:
-                config = {
-                    'host': db_settings["hostname"],
-                    'user': db_settings["username"],
-                    'passwd': db_settings["password"],
-                    'db': db_settings["database"]
-                }
-            else:
-                config = {
-                    'host': db_settings["hostname"],
-                    'user': db_settings["username"],
-                    'passwd': db_settings["password"]
-                }
-
-        else:
-            raise ValueError ("No database has been setup. Please run setup and try again.")
+        if use_db_name:
+            config['db'] = db_settings["database"]
 
         try:
             self.database = MySQLdb.connect(**config)
@@ -126,6 +114,11 @@ class Database(object):
             separator = '+'
 
             results = cursor.fetchall()
+
+            if not results:
+                print "\n   %s\n" % "No results found."
+                return
+
             sizetable = [map(len, map(str, row)) for row in results]
             widths = map(max, zip(*sizetable))
 
@@ -144,30 +137,15 @@ class Database(object):
                 tavnit += " %-" + "%ss |" % (w,)
                 separator += '-' * w + '--+'
 
-            print(separator)
-            print(tavnit % tuple(columns))
-            print(separator)
+            print separator
+            print tavnit % tuple(columns)
+            print separator
             for row in results:
-                print(tavnit % row)
-            print(separator)
+                print tavnit % row
+            print separator
 
         return cursor
 
     def executemany(self, statement, values):
         cursor = self.database.cursor()
         cursor.executemany(statement, values)
-
-    def does_db_exist(self, db_name):
-        try:
-            results = self.execute("SHOW DATABASES;")
-            for result in results:
-                print result
-
-            if results:
-                return True
-            else:
-                return False
-        except MySQLdb.Error:
-            print "ERROR IN CONNECTION"
-
-        return False
