@@ -30,12 +30,10 @@ CREATE TABLE `faculty` (
 
 CREATE TABLE `courses` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `campus_id` INT UNSIGNED NOT NULL,
   `peoplesoft_course_id` VARCHAR(50) NOT NULL,
   `name` VARCHAR(50) NOT NULL,
   `active` BOOL NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (campus_id) references campuses(id) on DELETE CASCADE
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `sections` (
@@ -44,9 +42,7 @@ CREATE TABLE `sections` (
   `term_id` INT UNSIGNED NOT NULL,
   `campus_id` INT UNSIGNED NOT NULL,
   `faculty_id` INT UNSIGNED NOT NULL,
-  `peoplesoft_course_id` VARCHAR(50) NOT NULL,
   `section_number` INT(3) UNSIGNED ZEROFILL NOT NULL,
-  `name` VARCHAR(50) NOT NULL,
   `active` BOOL NOT NULL DEFAULT 1,
   `searchable` BOOL NOT NULL DEFAULT 1,
   `start_date` DATE NOT NULL,

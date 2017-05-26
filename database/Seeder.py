@@ -76,7 +76,6 @@ class Seeder(object):
         for i in range(1, 11):
             courses.append({
                 'id': i,
-                'campus_id': choice(campuses)['id'],
                 'peoplesoft_course_id': 'LAW-LW.%d' % self.fake.random_number(digits=5, fix_len=True),
                 'name': course_names[i-1],
                 'active': int(self.fake.boolean())
@@ -99,9 +98,7 @@ class Seeder(object):
                 'term_id': term['id'],
                 'campus_id': choice(campuses)['id'],
                 'faculty_id': choice(faculty)['id'],
-                'peoplesoft_course_id': course['peoplesoft_course_id'],
                 'section_number': self.fake.random_int(1, 50),
-                'name': course['name'],
                 'active': int(self.fake.boolean()),
                 'searchable': int(self.fake.boolean()),
                 'start_date': start_date.strftime('%Y-%m-%d'),
