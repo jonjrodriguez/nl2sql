@@ -21,8 +21,13 @@ class NodeSelector(object):
         return self.tree
 
 
-    def create_choices(self, node):
+    def create_choices(self, node, threshold=.5):
         label = None
+
+        # Return single choice if only one item is above threshold
+        choices = [choice[0] for choice in node.choices if choice[1] > threshold]
+        if len(choices) == 1:
+            return choices
 
         if node.type == 'schema':
             for child in node.children:
