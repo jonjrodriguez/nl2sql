@@ -1,5 +1,6 @@
 import itertools
 from sql.nodes.SelectNode import SelectNode
+from sql.nodes.TableNode import TableNode
 from sql.nodes.AttributeNode import AttributeNode
 from sql.nodes.ValueNode import ValueNode
 
@@ -26,6 +27,9 @@ class SQLGenerator(object):
             self.add_to_node_dict("tables", table)
             self.add_to_node_dict(node.sql_label, "%s %s '%s'" % (node.attribute, node.operator,
                                                                   node.label))
+        elif isinstance(node, TableNode):
+            self.add_to_node_dict('tables', node.label)
+            self.add_to_node_dict('froms', "%s.*" % node.label)
         elif not isinstance(node, SelectNode):
             self.add_to_node_dict(node.sql_label, node.label)
 
@@ -41,7 +45,7 @@ class SQLGenerator(object):
 
 
     def get_sql(self):
-        _select = "*"
+        _select = ""
         _from = ""
         _where = ""
         _limit = ""
@@ -61,6 +65,9 @@ class SQLGenerator(object):
                 _where = " and ".join(values)
             elif keyword == "limit":
                 _limit = max(values)
+
+        if not _select:
+            _select = ", ".join(self.node_dict['froms'])
 
         sql = "SELECT %s" % _select
         sql += " FROM %s" % _from
