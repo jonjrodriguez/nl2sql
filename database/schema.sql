@@ -30,12 +30,10 @@ CREATE TABLE `faculty` (
 
 CREATE TABLE `courses` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `campus_id` INT UNSIGNED NOT NULL,
   `peoplesoft_course_id` VARCHAR(50) NOT NULL,
   `name` VARCHAR(50) NOT NULL,
   `active` BOOL NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (campus_id) references campuses(id) on DELETE CASCADE
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `sections` (

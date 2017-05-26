@@ -49,20 +49,10 @@ class Runner(object):
 
             tree = self.node_generator(doc)
 
-            print
-            print tree
-            print
-
-            tree.pretty_print()
-
             sql_generator = SQLGenerator(tree, self.schema_graph)
-            sql = sql_generator.getSQL()
 
-            print sql
-            print
-
-            db = Database()
-            db.execute(sql, True)
+            database = Database()
+            database.execute(sql_generator.get_sql(), True)
             self.communicator.resume()
 
 

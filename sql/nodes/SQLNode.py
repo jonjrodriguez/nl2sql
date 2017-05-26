@@ -49,9 +49,12 @@ class SQLNode(object):
         childstrs = []
 
         for child in self.children:
-            childstrs.append(str(child))
+            if child.children:
+                childstrs.append(str(child))
+            else:
+                childstrs.append('%s' % (repr(child)))
 
         if not childstrs:
-            return '%s' % (repr(self))
+            return '(%s)' % (repr(self))
 
         return '(%s %s)' % (repr(self), " ".join(childstrs))

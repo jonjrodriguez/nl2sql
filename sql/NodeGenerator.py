@@ -1,111 +1,126 @@
-from sql.AttributeNode import AttributeNode
-from sql.FunctionNode import FunctionNode
-from sql.FunctionNodeType import FunctionNodeType
-from sql.SelectNode import SelectNode
-from sql.TableNode import TableNode
-from sql.ValueNode import ValueNode
-from sql.LimitNode import LimitNode
-from sql.OperatorNodeType import OperatorNodeType
+from sql.nodes.AttributeNode import AttributeNode
+from sql.nodes.FunctionNode import FunctionNode
+from sql.nodes.FunctionNodeType import FunctionNodeType
+from sql.nodes.SelectNode import SelectNode
+from sql.nodes.TableNode import TableNode
+from sql.nodes.ValueNode import ValueNode
+from sql.nodes.LimitNode import LimitNode
+from sql.nodes.IntermediateNode import IntermediateNode
+from sql.NodeSelector import NodeSelector
+from sql.NodeReducer import NodeReducer
+
 
 class NodeGenerator(object):
-    def __init__(self, communicator, threshold=0.6):
+    def __init__(self, communicator):
         self.communicator = communicator
-        self.threshold = threshold
+
         self.tagged = {}
+        self.parse = None
+
+        selector = NodeSelector(communicator)
+        reducer = NodeReducer()
+
+        self.pipeline = [selector, reducer]
 
 
     def __call__(self, doc):
         self.tagged = doc['tagged']
-        return self.generate_tree(doc['dep_parse'].root, doc)
+        self.parse = doc['dep_parse']
+
+        tree = self.generate_tree(self.parse.root)
+
+        for process in self.pipeline:
+            tree = process(tree)
+
+        return tree
 
 
-    def generate_tree(self, node, doc):
-        tree = self.get_node_type(node['word'])
+    def generate_tree(self, node):
+        tree = self.get_node_type(node)
 
-        for key in node['deps'].items():
-            _, dep_index = key
-            idx = int(dep_index[0])
+        for _, key in node['deps'].items():
+            idx = int(key[0])
 
-            if doc['dep_parse'].nodes[idx]:
-                result = self.generate_tree(doc['dep_parse'].nodes[idx], doc)
-                if result:
-                    if tree:
-                        tree.add_child(result)
-                    else:
-                        tree = result
+            result = self.generate_tree(self.parse.nodes[idx])
+            if not result:
+                continue
+
+            if tree:
+                tree.add_child(result)
+                result.add_parent(tree)
+            else:
+                tree = result
 
         return tree
 
 
     def get_node_type(self, node):
-        # Node will be passed in as a Unicode type
-        token = str(node)
+        token = node['word']
 
         # First check is to see if the token has been tagged
         # By any of our classifiers. If it hasn't we can ignore
         # The token
-        if not node in self.tagged:
+        if not token in self.tagged:
             return None
 
         node_type = self.tagged[token]['type']
         node_tag = self.tagged[token]['tags']
 
-        # This next check is to if the tag that was given to the token
-        # Is part of a larger tag. (i.e. 'How many' would be 2 tokens where
-        # The tag for 'How' would be null and the tag for 'many' would be COUNT)
-        # We want to ignore all null node tags
-        if str(node_tag) == "IGN":
+        # Ignore tokens tagged as IGN
+        if node_tag == "IGN":
             return None
 
-        if (node_type == "schema") or (node_type == "corpus"):
-            return self.get_db_node(node_type, node_tag, token)
+        # Dynamically create method to call
+        method_name = "get_%s_node" % node_type
+        try:
+            method = getattr(self, method_name)
+        except AttributeError:
+            self.communicator.error("No method for node type: %s" % node_type)
 
-        if node_type == "grammar":
-            return self.get_grammar_node(node_type, node_tag, token)
+        return method(node, node_tag)
 
-        # This is where the operator node will also be generated
-        return None
+
+    def get_grammar_node(self, node, tag):
+        token = node['word']
+
+        if tag == "SELECT":
+            return SelectNode()
+
+        if tag == "COUNT":
+            return FunctionNode(func_type=FunctionNodeType.COUNT)
+
+        if tag == "LIMIT":
+            return LimitNode(token)
+
+        self.communicator.error("Not handling grammar tag: %s" % tag)
 
 
     @staticmethod
-    def get_grammar_node(node_type, node_tag, token):
-        if not node_type == "grammar":
-            return None
-
-        tag = str(node_tag)
-        if tag == "SELECT":
-            return SelectNode()
-        elif tag == "COUNT":
-            return FunctionNode(None, FunctionNodeType.COUNT)
-        elif tag == "LIMIT":
-            return LimitNode(token)
-        elif tag == "EQUAL":
-            return OperatorNode()
-        elif tag == "LESS_THAN":
-            return OperatorNode(OperatorNodeType.LESS_THAN)
-        elif tag == "GREATER_THAN":
-            return OperatorNode(OperatorNodeType.GREATER_THAN)
-
-
-    def get_db_node(self, node_type, node_tag, token):
-        if not ((node_type == "schema") or (node_type == "corpus")):
-            return None
+    def get_schema_node(node, tags):
+        token = node['word']
 
         # Because the Node Type for this object is either Schema or Corpus
         # We can safely make the assumption that the Node Tag will be a list
-        term, score = node_tag[0]
+        tag, score = tags[0]
 
-        # For tags that come back with a very low score, this will be used
-        # To interact with the user to confirm what the query is referring to
-        selected = 0 if score == 1.0 else self.communicator.choose(token, node_tag)
+        if score < 1.0:
+            return IntermediateNode('schema', token, tags)
 
-        term, score = node_tag[int(selected)]
+        if "." in tag:
+            return AttributeNode(tag)
+        else:
+            return TableNode(tag)
 
-        if node_type == "corpus":
-            return ValueNode(token, term)
 
-        if node_type == "schema":
-            if "." in term:
-                return AttributeNode(term)
-            else:
-                return TableNode(term)
+    @staticmethod
+    def get_corpus_node(node, tags):
+        token = node['word']
+
+        # Because the Node Type for this object is either Schema or Corpus
+        # We can safely make the assumption that the Node Tag will be a list
+        tag, score = tags[0]
+
+        if score < 1.0:
+            return IntermediateNode('corpus', token, tags)
+
+        return ValueNode(token, tag)

@@ -1,5 +1,5 @@
-from sql.SQLNodeType import SQLNodeType
-from sql.SQLNode import SQLNode
+from sql.nodes.SQLNodeType import SQLNodeType
+from sql.nodes.SQLNode import SQLNode
 
 
 class AttributeNode(SQLNode):
