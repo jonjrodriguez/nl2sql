@@ -3,6 +3,7 @@ import nltk
 from Config import Config
 from database import Database, SchemaGraph
 from nlp import DBCorpusGenerator, DBCorpusClassifier, SQLGrammarClassifier
+from _mysql_exceptions import OperationalError
 
 class Setup(object):
     """
@@ -20,9 +21,8 @@ class Setup(object):
         self.comm.say("Downloading WordNet corpora.")
         nltk.download("wordnet")
 
-        if force and self.comm.confirm("Do you want to force a db setup?"):
-            self.setup_db(force)
 
+        self.setup_db(force)
         self.create_db_graph(force)
         self.create_db_corpus(force)
         self.train_db_classifier(force)
@@ -36,6 +36,8 @@ class Setup(object):
         if not force and self.config.has("DATABASE"):
             self.comm.say("Database already configured.")
             return
+        else:
+            self.comm.confirm("Do you want to force a db setup?")
 
         self.comm.say("Configuring Database:")
 
@@ -43,32 +45,34 @@ class Setup(object):
             self.config.set("DATABASE", "hostname", self.comm.ask("Enter hostname"))
             self.config.set("DATABASE", "username", self.comm.ask("Enter MySQL user"))
             self.config.set("DATABASE", "password", self.comm.ask("Enter MySQL password"))
-            db = self.comm.ask("Enter database name")
-            self.config.set("DATABASE", "database", db)
+            db_name = self.comm.ask("Enter database name")
+            self.config.set("DATABASE", "database", db_name)
             self.config.write()
         else:
             if not self.config.has("DATABASE"):
+                self.comm.say("Looks like there is no database setup")
                 self.config.set("DATABASE", "hostname", self.comm.ask("Enter hostname"))
                 self.config.set("DATABASE", "username", self.comm.ask("Enter MySQL user"))
                 self.config.set("DATABASE", "password", self.comm.ask("Enter MySQL password"))
-                db = self.comm.ask("Enter database name")
-                self.config.set("DATABASE", "database", db)
+                db_name = self.comm.ask("Enter database name")
+                self.config.set("DATABASE", "database", db_name)
                 self.config.write()
             else:
-                db = self.config.get("DATABASE", "database")
+                db_name = self.config.get("DATABASE", "database")
 
         try:
-            database = Database()
+            database = Database(False)
         except ValueError as exception:
             self.comm.error("Error: %s" % exception)
 
         db_exists = False
+
         try:
-            database.set_db(db)
+            database.set_db(db_name)
             db_exists = True
         except ValueError as exception:
             if self.comm.confirm("Database does not exist. Create it?"):
-                database.create_db(db)
+                database.create_db(db_name)
                 db_exists = True
 
         if db_exists:

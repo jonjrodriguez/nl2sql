@@ -9,7 +9,7 @@ class Database(object):
     """
     Communicates with a MySQL database
     """
-    def __init__(self):
+    def __init__(self, use_db_name=True):
         config = Config()
         db_settings = dict(config.items("DATABASE"))
 
@@ -17,12 +17,19 @@ class Database(object):
             if not db_settings:
                 raise ValueError('No database settings were found. Run setup to continue')
 
-            config = {
-                'host': db_settings["hostname"],
-                'user': db_settings["username"],
-                'passwd': db_settings["password"],
-                'db': db_settings["database"]
-            }
+            if use_db_name:
+                config = {
+                    'host': db_settings["hostname"],
+                    'user': db_settings["username"],
+                    'passwd': db_settings["password"],
+                    'db': db_settings["database"]
+                }
+            else:
+                config = {
+                    'host': db_settings["hostname"],
+                    'user': db_settings["username"],
+                    'passwd': db_settings["password"]
+                }
 
         else:
             raise ValueError ("No database has been setup. Please run setup and try again.")
@@ -36,6 +43,7 @@ class Database(object):
     def set_db(self, db_name):
         try:
             self.database.select_db(db_name)
+            self.database.commit()
         except OperationalError as (_, error):
             raise ValueError('Incorrect name given for the database. %s' % error)
 
@@ -148,3 +156,18 @@ class Database(object):
     def executemany(self, statement, values):
         cursor = self.database.cursor()
         cursor.executemany(statement, values)
+
+    def does_db_exist(self, db_name):
+        try:
+            results = self.execute("SHOW DATABASES;")
+            for result in results:
+                print result
+
+            if results:
+                return True
+            else:
+                return False
+        except MySQLdb.Error:
+            print "ERROR IN CONNECTION"
+
+        return False
