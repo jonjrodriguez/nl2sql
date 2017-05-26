@@ -7,13 +7,18 @@ from sql.nodes.ValueNode import ValueNode
 class NodeSelector(object):
     def __init__(self, communicator):
         self.communicator = communicator
+        self.tree = None
 
 
     def __call__(self, tree):
-        for node in self.intermediate_nodes(tree):
+        self.tree = tree
+
+        for node in self.intermediate_nodes():
             choices = self.create_choices(node)
             choice = 0 if len(choices) == 1 else self.communicator.choose(node.label, choices)
             self.update_tree(node, choices[choice])
+
+        return self.tree
 
 
     def create_choices(self, node):
@@ -51,8 +56,7 @@ class NodeSelector(object):
         self.replace_node(node, new_node)
 
 
-    @staticmethod
-    def replace_node(node, new_node):
+    def replace_node(self, node, new_node):
         parent = node.parent
         children = node.children
 
@@ -64,11 +68,13 @@ class NodeSelector(object):
 
         if parent:
             parent.children = [new_node if child == node else child for child in parent.children]
+        else:
+            self.tree = new_node
 
 
-    def intermediate_nodes(self, tree):
+    def intermediate_nodes(self):
         while True:
-            intermediate = self.find_first_choice(tree)
+            intermediate = self.find_first_choice(self.tree)
             if not intermediate:
                 break
 

@@ -2,8 +2,16 @@ from sql.nodes.ValueNode import ValueNode
 
 
 class NodeReducer(object):
+    def __init__(self):
+        self.tree = None
+
+
     def __call__(self, tree):
-        self.reduce_tree(tree)
+        self.tree = tree
+
+        self.reduce_tree(self.tree)
+
+        return self.tree
 
 
     def reduce_tree(self, node):

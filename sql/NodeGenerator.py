@@ -30,7 +30,7 @@ class NodeGenerator(object):
         tree = self.generate_tree(self.parse.root)
 
         for process in self.pipeline:
-            process(tree)
+            tree = process(tree)
 
         return tree
 
