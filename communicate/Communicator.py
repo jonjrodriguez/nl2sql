@@ -47,7 +47,7 @@ class Communicator(object):
         selected = 0
 
         # Constructing the message that will be displayed to the user
-        choices = ['Which of these options best categorizes your use of the term ' + token + ' ?']
+        choices = ['Which of these options best categorizes your use of the term: ' + token + ' ?']
         for i, term in enumerate(options):
             terms = re.split(r'\W+|_', term)
             formatted_terms = " ".join(terms)
