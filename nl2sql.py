@@ -38,8 +38,10 @@ def setup(force):
 
     Setup(comm).run(force)
 
-
-def run():
+@plac.annotations(
+    debug=("Print out debug statements", "flag", "d", bool)
+)
+def run(debug):
     """
     Start NL2SQL to parse questions
     """
@@ -48,7 +50,7 @@ def run():
     if not os.path.isfile('config.cfg'):
         comm.error('Make sure to run the download and setup commands first.')
 
-    Runner().start()
+    Runner().start(debug)
 
 
 def __missing__(name):

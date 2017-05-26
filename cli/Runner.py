@@ -28,14 +28,14 @@ class Runner(object):
         self.node_generator = NodeGenerator(self.communicator)
 
 
-    def start(self):
+    def start(self, debug=False):
         self.communicator.say("Type 'exit' to quit")
 
         self.communicator.greet()
-        self.start_loop()
+        self.start_loop(debug)
 
 
-    def start_loop(self):
+    def start_loop(self, debug):
         while True:
             statement = self.communicator.ask(">")
 
@@ -52,6 +52,9 @@ class Runner(object):
             sql_generator = SQLGenerator(tree, self.schema_graph)
             sql = sql_generator.get_sql()
 
+            if debug:
+                self.print_debug(doc, tree, sql)
+
             database = Database()
             database.execute(sql, True)
 
@@ -64,3 +67,20 @@ class Runner(object):
             'tokens': self.tokenizer(statement),
             'tagged': {}
         }
+
+
+    def print_debug(self, doc, tree, sql):
+        self.communicator.say("Parse Pretty Print")
+        doc['parse'].pretty_print()
+
+        self.communicator.say("Dependency Parse Pretty Print")
+        doc['dep_parse'].tree().pretty_print()
+
+        self.communicator.say("Tagged tokens")
+        for token, tags in doc['tagged'].items():
+            print "   %s: %s" % (token, tags)
+
+        self.communicator.say("SQL Tree Pretty Print")
+        tree.pretty_print()
+
+        self.communicator.say("SQL: %s" % sql)
