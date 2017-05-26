@@ -1,5 +1,5 @@
 import cPickle as pickle
-from nltk import UnigramTagger, DefaultTagger
+from nltk import BigramTagger, UnigramTagger, DefaultTagger
 from nlp.SQLGrammarCorpus import CORPUS
 
 class SQLGrammarClassifier(object):
@@ -31,7 +31,8 @@ class SQLGrammarClassifier(object):
     def train(self, model_path):
         corpus = [[(token.lower(), tag) for token, tag in sent] for sent in CORPUS]
 
-        tagger = UnigramTagger(corpus, backoff=DefaultTagger('UNK'))
+        unigram_tagger = UnigramTagger(corpus, backoff=DefaultTagger('UNK'))
+        bigram_tagger = BigramTagger(corpus, backoff=unigram_tagger)
 
         with open(model_path, "wb") as model_file:
-            pickle.dump(tagger, model_file)
+            pickle.dump(bigram_tagger, model_file)
