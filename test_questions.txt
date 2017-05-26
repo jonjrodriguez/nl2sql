@@ -1,34 +1,36 @@
-What does LAW-LW.10001 stand for ?
-What does LAW-LW.10004 stand for ?
-Who is Anne Aaltonen ?
-Who is Anders Aamand ?
-Who is Kathryn von Matthiessen ?
-Who is Saboor Abduljaami ?
-Who are the TAs for LAW-LW.11275 ?
-What students are registered for LAW-LW.11275 in the fall ?
-Who teaches LAW-LW.11275 ?
-Who teaches Lawyering on Thursday evenings ?
-What professor has the most registered students ?
-What professor has the biggest class of registered students ?
-Where is LAW-LW.10009 ?
-Where is LAW-LW.10009 ?
-In what room is LAW-LW.10009 held ?
-What is professor Eric Albert's phone number ?
-How many students are registered for LAW-LW.11275 in the fall ?
-How many students are registered the spring ?
-What is the first day of classes for Family Law on Wednesdays ?
+Who is Anne Aaltonen ? (Valid student name finds row --- can't really answer who)
+Who is Anders Aamand ? (Same as above for Faculty)
+What students are registered for Constitutional Law in spring 2017?
+How many students are registered for Constitutional Law in spring 2017?
+Find all section names for fall 2016.
+What faculty teach International Tax?
+What faculty teach Constitutional Law?
+How many students are registered for spring 2017? (duplicates)
+How many students are taking Constitutional Law in the spring of 2016?
+How many students are taking Constitutional Law in spring 2016?
+How many sections named Copyright Law?
+How many students named Jonathan Rodriguez?
+How many faculty named Jonathan Rodriguez?
+What sections are taught in California?
+How many students taking courses in Utah? (duplicates)
+How many students taking courses in Kansas during Spring 2017?
+Find section names and section_numbers for sections located in Utah.
+Find student names and emails for students taking Insurance Law in Kansas during Spring 2017. 
+
+Questions we can't answer:
+What does LAW-LW.10001 stand for ? (tokenization separates LAW-LW.10001)
+Who are the TAs for LAW-LW.11275? (don't have TA info)
+Who teaches International Tax? (don't understand 'teaches')
+Who teaches LAW-LW.11275?
+Who teaches Lawyering on Thursday evenings? (no schedule)
+What professor has the most registered students? (no concept of most -- subquery?)
+What professor has the biggest class of registered students?
+Where is LAW-LW.10009? (No concept of where)
+In what room is LAW-LW.10009 held? (No room info)
+What is professor Eric Albert's phone number? (No phone info)
+What is the first day of classes for Family Law on Wednesdays?
 At what time does corporations I start ?
 What is the duration of Family Law ?
 What 's the most bid for Lawerying in the fall semesters ?
 How many weeks is Family Law ?
-What is the total number of students registered for LAW-LW.11275 in the fall ?
-What is the average number of students that register for LAW-LW.11275 ?
-How many students are taking Constitutional Law in the Spring of 2016?
-How many students are taking Constitutional Law in Spring 2016?
-How many sections named Tax Law?
-What faculty teach Constitutional Law?
-How many students named Jonathan Rodriguez?
-How many sections in North Carolina?
-How many students taking courses in North Carolina?
-How many students taking courses in North Carolina during Spring 2017?
-Find section names and section_numbers for sections located in Utah
+What is the average number of students that register for LAW-LW.11275?
