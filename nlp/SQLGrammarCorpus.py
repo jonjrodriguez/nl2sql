@@ -192,4 +192,18 @@ CORPUS = [
         ('sections', "UNK"),
         ('.', 'IGN')
     ],
+    [
+        ('list', 'SELECT'),
+        ('all', 'IGN'),
+        ('faculty', 'UNK'),
+        ('teaching', 'IGN'),
+        ('Constitutional', 'UNK'),
+        ('Law', 'UNK')
+    ],
+    [
+        ('Who', 'SELECT'),
+        ('is', 'IGN'),
+        ('Kara', 'UNK'),
+        ('Cortez', 'UNK')
+    ]
 ]
