@@ -67,7 +67,7 @@ class SQLGenerator(object):
                 _limit = max(values)
 
         if not _select:
-            _select = "*" if not 'forms' in self.node_dict else ", ".join(self.node_dict['froms'])
+            _select = "*" if 'froms' not in self.node_dict else ", ".join(self.node_dict['froms'])
 
         sql = "SELECT %s" % _select
         sql += " FROM %s" % _from
